@@ -6,7 +6,7 @@ type StatCardProps = {
 
 const StatCard = ({ title, value, change }: StatCardProps) => {
   return (
-    <div className="flex flex-1 flex-col justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 transition-colors hover:border-gray-300">
+    <div className="flex flex-1 flex-col justify-between rounded-xl border border-gray-200  drop-shadow-xs bg-white px-4 py-3 transition-colors hover:border-gray-300">
       {/* Titre */}
       <p className="text-xs font-medium text-gray-500">
         {title}

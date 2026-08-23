@@ -132,6 +132,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   return (
     <aside
       className={`
+      sticky top-0
         flex h-screen shrink-0 flex-col
         overflow-hidden
       
@@ -173,16 +174,18 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             }
           `}
         >
-          <img
+          
+
+          {!collapsed && (
+            <>  <img
             src="/favicon.png"
             alt="Orion"
             className="h-7 w-7 shrink-0 object-contain"
           />
-
-          {!collapsed && (
             <span className="font-heading text-[15px] font-semibold tracking-tight text-gray-900">
               Orion
-            </span>
+            </span></>
+          
           )}
         </div>
 
@@ -220,7 +223,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
 
       <div
         className={`
-          shrink-0
+          shrink-0 py-3
           ${
             collapsed
               ? "px-3"
