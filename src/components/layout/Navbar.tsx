@@ -23,10 +23,8 @@ const UserMenuPill = ({
 }: UserMenuPillProps) => {
   const [open, setOpen] = useState(false);
 
-  // Référence vers tout le dropdown
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fermer le dropdown quand on clique à l'extérieur
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -49,67 +47,190 @@ const UserMenuPill = ({
       ref={dropdownRef}
       className="relative inline-block text-left"
     >
-      {/* User button */}
+      {/* ================= USER BUTTON ================= */}
+
       <button
         type="button"
         aria-label="Open user menu"
         aria-expanded={open}
-        onClick={() => setOpen(!open)}
-        className={`inline-flex h-10 items-center gap-2 rounded-full border border-gray-200 bg-white p-1 pr-2 transition-all hover:border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500/20 ${className}`}
+        onClick={() => setOpen((prev) => !prev)}
+        className={`
+          inline-flex
+          h-9
+          items-center
+          gap-1.5
+          rounded-full
+          border
+          border-gray-200
+          bg-white
+          p-1
+          pr-1.5
+          transition-all
+          hover:border-gray-300
+          hover:bg-gray-50
+          focus:outline-none
+          focus:ring-2
+          focus:ring-orange-500/20
+
+          sm:h-10
+          sm:gap-2
+          sm:pr-2
+
+          ${className}
+        `}
       >
         <img
           src={avatarUrl}
           alt={altText}
-          className="h-8 w-8 rounded-full object-cover"
+          className="
+            h-7
+            w-7
+            rounded-full
+            object-cover
+
+            sm:h-8
+            sm:w-8
+          "
         />
 
         <ChevronDown
-          size={16}
-          className={`text-gray-500 transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
+          size={15}
+          className={`
+            text-gray-500
+            transition-transform
+            duration-200
+
+            sm:size-[16px]
+
+            ${open ? "rotate-180" : ""}
+          `}
         />
       </button>
 
-      {/* Dropdown */}
+      {/* ================= DROPDOWN ================= */}
+
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg ring-1 ring-black/5">
+        <div
+          className="
+            absolute
+            right-0
+            z-50
+            mt-2
+            w-44
+            origin-top-right
+            rounded-xl
+            border
+            border-gray-200
+            bg-white
+            p-1.5
+            shadow-lg
+            ring-1
+            ring-black/5
+
+            sm:w-48
+          "
+        >
           {/* Profile */}
+
           <button
             type="button"
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+            className="
+              flex
+              w-full
+              items-center
+              gap-2
+              rounded-lg
+              px-2.5
+              py-2.5
+              text-left
+              text-[12px]!
+              font-medium
+              text-gray-700
+              transition-colors
+              hover:bg-gray-100
+
+              sm:px-3
+              sm:text-sm!
+            "
           >
             <User
-              size={16}
-              className="text-gray-500"
+              size={15}
+              className="shrink-0 text-gray-500"
             />
 
-            <span>Profile</span>
+            <span>
+              Profile
+            </span>
           </button>
 
           {/* Settings */}
+
           <button
             type="button"
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+            className="
+              flex
+              w-full
+              items-center
+              gap-2
+              rounded-lg
+              px-2.5
+              py-2.5
+              text-left
+              text-[12px]!
+              font-medium
+              text-gray-700
+              transition-colors
+              hover:bg-gray-100
+
+              sm:px-3
+              sm:text-sm!
+            "
           >
             <Settings
-              size={16}
-              className="text-gray-500"
+              size={15}
+              className="shrink-0 text-gray-500"
             />
 
-            <span>Settings</span>
+            <span>
+              Settings
+            </span>
           </button>
 
           {/* Separator */}
-        
+
+          <div className="my-1 h-px bg-gray-100" />
+
           {/* Logout */}
+
           <button
             type="button"
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
-          >
-            <LogOut size={16} />
+            className="
+              flex
+              w-full
+              items-center
+              gap-2
+              rounded-lg
+              px-2.5
+              py-2.5
+              text-left
+              text-[12px]!
+              font-medium
+              text-red-500
+              transition-colors
+              hover:bg-red-50
 
-            <span>Logout</span>
+              sm:px-3
+              sm:text-sm!
+            "
+          >
+            <LogOut
+              size={15}
+              className="shrink-0"
+            />
+
+            <span>
+              Logout
+            </span>
           </button>
         </div>
       )}
@@ -119,36 +240,131 @@ const UserMenuPill = ({
 
 const Navbar = () => {
   return (
-    <header className="flex h-17 items-center bg-[#fafafa] justify-between border-b border-gray-200 px-5.5 rounded-l-t-3xl py-3">
-      {/* Title */}
-      <h1 className="text-base font-semibold text-gray-600">
+    <header
+      className="
+        sticky
+        top-0
+        z-30
+        flex
+        h-16
+        items-center
+        justify-between
+        gap-3
+        border-b
+        border-gray-200
+        bg-[#fafafa]
+        px-3
+        py-2
+
+        sm:px-4
+
+        lg:px-5
+      "
+    >
+      {/* ================= TITLE ================= */}
+
+      <h1
+        className="
+          min-w-0
+          truncate
+          text-base!
+          font-semibold
+          text-gray-600
+
+          sm:text-xl!
+        "
+      >
         Dashboard
       </h1>
 
-      {/* Actions */}
-      <div className="flex items-center gap-4">
-        {/* Notifications */}
+      {/* ================= ACTIONS ================= */}
+
+      <div
+        className="
+          flex
+          shrink-0
+          items-center
+          gap-2
+
+          sm:gap-3
+
+          lg:gap-4
+        "
+      >
+        {/* ================= NOTIFICATIONS ================= */}
+
         <button
           type="button"
           aria-label="Notifications"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+          className="
+            flex
+            h-9
+            w-9
+            shrink-0
+            items-center
+            justify-center
+            rounded-full
+            border
+            border-gray-200
+            bg-white
+            text-gray-500
+            transition
+            hover:border-gray-300
+            hover:bg-gray-50
+            hover:text-gray-900
+            focus:outline-none
+            focus:ring-2
+            focus:ring-orange-500/20
+
+            sm:h-10
+            sm:w-10
+          "
         >
-          <Bell size={19} />
+          <Bell
+            size={17}
+            strokeWidth={1.9}
+            className="sm:size-[19px]"
+          />
         </button>
 
-        {/* User menu */}
+        {/* ================= USER ================= */}
+
         <UserMenuPill
           avatarUrl="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250"
         />
 
-        {/* Add product */}
-        <Button>
-          <Plus size={18} />
-          Add product
+        {/* ================= ADD PRODUCT ================= */}
+
+        <Button
+          className="
+            flex
+            h-9
+            w-9
+            items-center
+            justify-center
+            gap-1.5
+            rounded-full
+            px-0
+
+            sm:h-10
+            sm:w-auto
+            sm:px-4
+            sm:rounded-lg
+          "
+          aria-label="Add product"
+        >
+          <Plus
+            size={17}
+            strokeWidth={2}
+          />
+
+          <span className="hidden text-[12px]! font-semibold sm:inline">
+            Add product
+          </span>
         </Button>
       </div>
     </header>
   );
 };
 
-export default Navbar; 
+export default Navbar;

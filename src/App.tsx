@@ -1,12 +1,5 @@
-import DashboardLayout from './layouts/DashboardLayout'
-
 const App = () => {
-  return (
-    <div>
-     <DashboardLayout/>
-    </div>
+  return null;
+};
 
-  )
-}
-
-export default App
+export default App;

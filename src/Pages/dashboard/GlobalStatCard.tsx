@@ -1,28 +1,21 @@
-import StatCard from "./StatCard"
+import StatCard from "./StatCard";
+import { dashboardConfig } from "./data/dashboardConfig";
 
 const GlobalStatCard = () => {
   return (
-     <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 ">
-            <StatCard
-              title="Your Earnings"
-              value={38937}
-              change={23}
-            />
+    <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-4">
+      {dashboardConfig.metrics.map((metric) => (
+        <StatCard
+          key={metric.id}
+          title={metric.label}
+          value={metric.value}
+          change={metric.change}
+          currency={metric.currency}
+          period={metric.period}
+        />
+      ))}
+    </div>
+  );
+};
 
-            <StatCard 
-            title="Documents Uploaded"
-              value={3}
-              change={0}
-            />
-
-            <StatCard
-              title="Downloads"
-              value={43}
-              change={9}
-            />
-          </div>
-
-  )
-}
-
-export default GlobalStatCard
+export default GlobalStatCard;

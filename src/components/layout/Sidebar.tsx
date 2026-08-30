@@ -90,15 +90,24 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           type="button"
           title={collapsed ? item.label : undefined}
           className={`
-            group flex w-full items-center
+            group
+            flex
+            w-full
+            cursor-pointer
+            items-center
             rounded-lg
-            text-left text-[13px] font-semibold
-            transition-all duration-150
+            text-left
+            text-[13px]!
+            font-semibold
+            transition-all
+            duration-150
+
             ${
               collapsed
                 ? "h-10 justify-center px-2"
                 : "h-10 gap-3 px-3"
             }
+
             ${
               item.active
                 ? "bg-blue-100 text-gray-900"
@@ -110,7 +119,10 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             size={17}
             strokeWidth={1.9}
             className={`
-              shrink-0 transition-colors duration-150
+              shrink-0
+              transition-colors
+              duration-150
+
               ${
                 item.active
                   ? "text-gray-900"
@@ -120,7 +132,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           />
 
           {!collapsed && (
-            <span className="truncate font-semibold">
+            <span className="truncate text-[13px]! font-semibold">
               {item.label}
             </span>
           )}
@@ -132,19 +144,40 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   return (
     <aside
       className={`
-      sticky top-0
-        flex h-screen shrink-0 flex-col
+        sticky
+        top-0
+        z-40
+        flex
+        h-screen
+        shrink-0
+        flex-col
         overflow-hidden
-      
         text-gray-600
         transition-[width]
         duration-200
         ease-out
+
         ${
           collapsed
             ? "w-[68px]"
             : "w-[260px]"
         }
+
+        max-sm:absolute
+        max-sm:left-0
+        max-sm:top-0
+        max-sm:h-screen
+        max-sm:bg-white
+        max-sm:shadow-xl
+
+        ${
+          collapsed
+            ? "max-sm:-translate-x-full"
+            : "max-sm:translate-x-0"
+        }
+
+        max-sm:transition-transform
+        max-sm:duration-200
       `}
     >
       {/* =====================================================
@@ -153,20 +186,26 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
 
       <div
         className={`
-          flex h-[64px] shrink-0 items-center
+          flex
+          h-[64px]
+          shrink-0
+          items-center
+          px-4
+
           ${
             collapsed
               ? "justify-center"
               : "justify-between"
           }
-          px-4
         `}
       >
         {/* Logo */}
 
         <div
           className={`
-            flex items-center
+            flex
+            items-center
+
             ${
               collapsed
                 ? ""
@@ -174,18 +213,18 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             }
           `}
         >
-          
-
           {!collapsed && (
-            <>  <img
-            src="/favicon.png"
-            alt="Orion"
-            className="h-7 w-7 shrink-0 object-contain"
-          />
-            <span className="font-heading text-[15px] font-semibold tracking-tight text-gray-900">
-              Orion
-            </span></>
-          
+            <>
+              <img
+                src="/favicon.png"
+                alt="Orion"
+                className="h-7 w-7 shrink-0 object-contain"
+              />
+
+              <span className="font-heading text-[15px]! font-semibold tracking-tight text-gray-900">
+                Orion
+              </span>
+            </>
           )}
         </div>
 
@@ -200,10 +239,12 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
               : "Collapse sidebar"
           }
           className="
+            cursor-pointer
             rounded-lg
             p-1.5
             text-gray-400
-            transition-all duration-150
+            transition-all
+            duration-150
             hover:bg-gray-100
             hover:text-gray-800
             active:scale-95
@@ -223,7 +264,9 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
 
       <div
         className={`
-          shrink-0 py-3
+          shrink-0
+          py-3
+
           ${
             collapsed
               ? "px-3"
@@ -236,8 +279,11 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             type="button"
             title="Search"
             className="
-              flex h-10 w-full
-              items-center justify-center
+              flex
+              h-10
+              w-full
+              items-center
+              justify-center
               rounded-lg
               text-gray-500
               transition
@@ -256,7 +302,9 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
               size={15}
               strokeWidth={1.9}
               className="
-                absolute left-3 top-1/2
+                absolute
+                left-3
+                top-1/2
                 -translate-y-1/2
                 text-gray-400
               "
@@ -266,12 +314,15 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
               type="text"
               placeholder="Search here..."
               className="
-                h-9 w-full
+                h-9
+                w-full
                 rounded-full
-                border border-gray-200
+                border
+                border-gray-200
                 bg-white
-                pl-9 pr-3
-                text-xs
+                pl-9
+                pr-3
+                text-xs!
                 font-semibold
                 text-gray-800
                 outline-none
@@ -296,7 +347,8 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           mt-5
           min-h-0
           flex-1
-          overflow-hidden
+          overflow-y-auto
+          overflow-x-hidden
           px-3
           pb-4
         "
@@ -308,7 +360,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             <div className="mb-2 flex items-center justify-between px-2">
               <span
                 className="
-                  text-[9px]
+                  text-[9px]!
                   font-semibold
                   uppercase
                   tracking-[0.08em]
@@ -318,7 +370,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
                 Primary
               </span>
 
-              <span className="text-[10px] font-semibold text-gray-400">
+              <span className="text-[10px]! font-semibold text-gray-400">
                 ^
               </span>
             </div>
@@ -336,7 +388,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             <div className="mb-2 flex items-center justify-between px-2">
               <span
                 className="
-                  text-[9px]
+                  text-[9px]!
                   font-semibold
                   uppercase
                   tracking-[0.08em]
@@ -346,7 +398,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
                 Creator
               </span>
 
-              <span className="text-[10px] font-semibold text-gray-400">
+              <span className="text-[10px]! font-semibold text-gray-400">
                 ^
               </span>
             </div>
@@ -364,7 +416,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             <div className="mb-2 flex items-center justify-between px-2">
               <span
                 className="
-                  text-[9px]
+                  text-[9px]!
                   font-semibold
                   uppercase
                   tracking-[0.08em]
@@ -374,7 +426,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
                 Profile & Support
               </span>
 
-              <span className="text-[10px] font-semibold text-gray-400">
+              <span className="text-[10px]! font-semibold text-gray-400">
                 ^
               </span>
             </div>
