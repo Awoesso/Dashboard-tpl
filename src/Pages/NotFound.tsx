@@ -1,50 +1,62 @@
-import { Link } from 'react-router-dom';
-import { AlertCircle } from 'lucide-react';
-
-/**
- * NotFound component - 404 page
- * Displayed when user navigates to an invalid route
- */
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Home } from "lucide-react";
 const NotFound = () => {
+  const navigate = useNavigate();
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-8">
+    <main className="min-h-screen bg-white flex items-center justify-center px-5 py-10">
+      {" "}
       <div className="w-full max-w-md text-center">
-        {/* Icon */}
-        <div className="mb-6 flex justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-            <AlertCircle size={32} className="text-red-600" />
-          </div>
-        </div>
-
-        {/* Content */}
-        <h1 className="text-4xl font-bold text-gray-900">404</h1>
-        <h2 className="mt-2 text-xl font-semibold text-gray-800">Page Not Found</h2>
-        
-        <p className="mt-3 text-gray-600">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-
-        {/* Actions */}
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link
-            to="/"
-            className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition"
-          >
-            Go to Dashboard
-          </Link>
+        {" "}
+        {/* 404 */}{" "}
+        <div className="mb-8">
+          {" "}
+          <span className="text-8xl sm:text-9xl font-bold tracking-tighter text-slate-200 select-none">
+            {" "}
+            404{" "}
+          </span>{" "}
+        </div>{" "}
+        {/* Content */}{" "}
+        <div className="space-y-3">
+          {" "}
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
+            {" "}
+            Page introuvable{" "}
+          </h1>{" "}
+          <p className="mx-auto max-w-sm text-sm sm:text-base leading-6 text-slate-500">
+            {" "}
+            Désolé, la page que vous recherchez n’existe pas ou n’est plus
+            disponible.{" "}
+          </p>{" "}
+        </div>{" "}
+        {/* Actions */}{" "}
+        <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          {" "}
           <button
-            onClick={() => window.history.back()}
-            className="rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+            type="button"
+            onClick={() => navigate(-1)}
+            className=" inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:border-slate-300 active:scale-[0.98] "
           >
-            Go Back
-          </button>
-        </div>
-
-        {/* Status Code */}
-        <p className="mt-8 text-xs text-gray-400">Error Code: 404</p>
-      </div>
+            {" "}
+            <ArrowLeft size={16} strokeWidth={2} /> Retour{" "}
+          </button>{" "}
+          <Link
+            to="/dashboard"
+            className=" inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm  text-white! transition hover:bg-slate-800 active:scale-[0.98] "
+          >
+            {" "}
+            <Home size={16} strokeWidth={2} /> Accueil{" "}
+          </Link>{" "}
+        </div>{" "}
+        {/* Footer */}{" "}
+        <div className="mt-12">
+          {" "}
+          <p className="text-xs text-slate-400">
+            {" "}
+            Nexa Digital Asset Platform{" "}
+          </p>{" "}
+        </div>{" "}
+      </div>{" "}
     </main>
   );
 };
-
 export default NotFound;

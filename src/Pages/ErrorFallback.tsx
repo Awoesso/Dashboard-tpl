@@ -1,60 +1,98 @@
-import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
-import { AlertTriangle } from 'lucide-react';
+import { useRouteError, isRouteErrorResponse, Link, useNavigate } from 'react-router-dom';
+import { AlertTriangle, RefreshCw, Home, ArrowLeft } from 'lucide-react';
 
 /**
- * ErrorFallback component - Error page for route errors
- * Handles all errors that occur during route rendering
+ * ErrorFallback component - Page d'erreur globale réactive et accessible
  */
-const ErrorFallback = () => {
+export const ErrorFallback = () => {
   const error = useRouteError();
+  const navigate = useNavigate();
 
-  const statusCode = isRouteErrorResponse(error) ? error.status : 500;
-  const statusText = isRouteErrorResponse(error)
-    ? error.statusText
-    : 'Internal Server Error';
-  const errorMessage = isRouteErrorResponse(error)
-    ? error.data?.message || 'An unexpected error occurred'
+  // Extraction propre des métadonnées d'erreur
+  const isResponseError = isRouteErrorResponse(error);
+  const statusCode = isResponseError ? error.status : 500;
+  const statusText = isResponseError ? error.statusText : 'Erreur Serveur';
+  
+  const errorMessage = isResponseError
+    ? error.data?.message || 'Une erreur inattendue est survenue.'
     : error instanceof Error
       ? error.message
-      : 'An unexpected error occurred';
+      : 'Une erreur inattendue est survenue.';
+
+  const stackTrace = error instanceof Error ? error.stack : JSON.stringify(error, null, 2);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-8">
-      <div className="w-full max-w-md rounded-lg border border-red-200 bg-white p-6 shadow-sm text-center">
-        {/* Icon */}
-        <div className="mb-4 flex justify-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-            <AlertTriangle size={24} className="text-red-600" />
+    <main className="min-h-screen w-full bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      {/* Halo lumineux d'arrière-plan */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
+        <div className="w-[500px] h-[500px] bg-red-500/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative w-full max-w-lg bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/50 p-6 sm:p-8 transition-all">
+        {/* Header Icon & Status Badge */}
+        <div className="flex flex-col items-center text-center">
+          <div className="relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 border border-red-100 text-red-600 shadow-inner">
+            <AlertTriangle size={32} strokeWidth={2} />
           </div>
+
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-xs font-semibold text-red-700 mb-2">
+            <span>Code d'erreur : {statusCode}</span>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            {statusText}
+          </h1>
+
+          <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed max-w-sm">
+            {errorMessage}
+          </p>
         </div>
 
-        {/* Error Status */}
-        <h1 className="text-3xl font-bold text-red-900">{statusCode}</h1>
-        <h2 className="mt-2 text-lg font-semibold text-gray-800">{statusText}</h2>
-
-        {/* Error Message */}
-        <p className="mt-3 text-sm text-gray-600">{errorMessage}</p>
-
-        {/* Debug Info (only in dev) */}
+        {/* Console de Debug (Environnement de dév) */}
         {import.meta.env.DEV && (
-          <details className="mt-4 text-left">
-            <summary className="cursor-pointer text-xs font-medium text-red-600 hover:text-red-700">
-              Error Details
+          <details className="mt-6 group rounded-xl border border-slate-200 bg-slate-50/80 overflow-hidden transition-all">
+            <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-xs font-medium text-slate-700 hover:bg-slate-100/80 transition-colors select-none">
+              <span>Détails techniques (Mode Dev)</span>
+              <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
             </summary>
-            <pre className="mt-2 overflow-auto rounded bg-red-50 p-2 text-[10px] text-red-800 whitespace-pre-wrap break-words">
-              {errorMessage}
-            </pre>
+            <div className="px-4 pb-4 pt-1 border-t border-slate-200/60">
+              <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-slate-900 p-3 text-[11px] font-mono text-red-300 leading-relaxed whitespace-pre-wrap break-all select-all">
+                {stackTrace}
+              </pre>
+            </div>
           </details>
         )}
 
-        {/* Actions */}
-        <div className="mt-6 flex flex-col gap-2">
-          <a
-            href="/"
-            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition inline-block"
+        {/* Actions Réseau & Navigation */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full">
+          {/* Action 1 : Retour en arrière */}
+          <button
+            onClick={() => navigate(-1)}
+            className="w-full sm:w-1/2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm active:scale-[0.98]"
           >
-            Go to Dashboard
-          </a>
+            <ArrowLeft size={16} />
+            <span>Retour</span>
+          </button>
+
+          {/* Action 2 : Recharger la page */}
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full sm:w-1/2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm active:scale-[0.98]"
+          >
+            <RefreshCw size={16} />
+            <span>Réessayer</span>
+          </button>
+        </div>
+
+        {/* Action Principale : Dashboard (SPA Routing) */}
+        <div className="mt-3">
+          <Link
+            to="/dashboard"
+            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-sm font-semibold text-white hover:bg-slate-800 transition-all shadow-md shadow-slate-900/10 active:scale-[0.98]"
+          >
+            <Home size={16} />
+            <span>Retour au Tableau de Bord</span>
+          </Link>
         </div>
       </div>
     </main>
