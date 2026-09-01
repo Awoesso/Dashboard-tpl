@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { UserAuth } from "../../Context/Authcontext";
 
 const SignIn = () => {
+  const navigate = useNavigate();
+
+  const { signInUser } = UserAuth();
+
   const [showPassword, setShowPassword] = useState(false);
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -21,11 +29,91 @@ const SignIn = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
-    // Supabase Auth viendra ici
-    console.log(formData);
+    setError("");
+
+    const { email, password } = formData;
+
+    // =========================
+    // VÉRIFICATION DES CHAMPS
+    // =========================
+
+    if (!email.trim() || !password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    // =========================
+    // LOADING
+    // =========================
+
+    setLoading(true);
+
+    try {
+      // =========================
+      // CONNEXION SUPABASE
+      // =========================
+
+      const result = await signInUser(
+        email.trim(),
+        password
+      );
+
+      // =========================
+      // ERREUR
+      // =========================
+
+      if (!result?.success) {
+        const errorMessage =
+          typeof result?.error === "string"
+            ? result.error
+            : "Unable to sign in.";
+
+        // =========================
+        // EMAIL NON VÉRIFIÉ
+        // =========================
+
+        if (
+          errorMessage.toLowerCase().includes("email not confirmed") ||
+          errorMessage.toLowerCase().includes("email not verified")
+        ) {
+          setError(
+            "Please verify your email before signing in."
+          );
+
+          return;
+        }
+
+        // =========================
+        // AUTRE ERREUR
+        // =========================
+
+        setError(errorMessage);
+        return;
+      }
+
+      // =========================
+      // CONNEXION RÉUSSIE
+      // =========================
+
+      navigate("/dashboard");
+
+    } catch (error) {
+      // Log only in development to prevent exposing errors in production
+      if (import.meta.env.DEV) {
+        console.error('Sign in error:', error);
+      }
+
+      setError(
+        "Something went wrong. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,6 +148,16 @@ const SignIn = () => {
         {/* ================= CARD ================= */}
 
         <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+
+          {/* ================= ERROR ================= */}
+
+          {error && (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2">
+              <p className="text-[11px]! font-medium text-red-600 sm:text-[12px]!">
+                {error}
+              </p>
+            </div>
+          )}
 
           <form
             onSubmit={handleSubmit}
@@ -142,7 +240,11 @@ const SignIn = () => {
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
@@ -172,7 +274,9 @@ const SignIn = () => {
                 <button
                   type="button"
                   onClick={() =>
-                    setShowPassword((prev) => !prev)
+                    setShowPassword(
+                      (prev) => !prev
+                    )
                   }
                   aria-label={
                     showPassword
@@ -240,6 +344,7 @@ const SignIn = () => {
 
             <button
               type="submit"
+              disabled={loading}
               className="
                 flex
                 h-10!
@@ -259,11 +364,15 @@ const SignIn = () => {
                 focus:outline-none
                 focus:ring-2
                 focus:ring-blue-500/20
+                disabled:cursor-not-allowed
+                disabled:opacity-60
                 sm:h-11!
                 sm:text-[13px]!
               "
             >
-              Se connecter
+              {loading
+                ? "Connexion..."
+                : "Se connecter"}
             </button>
 
           </form>
@@ -290,7 +399,7 @@ const SignIn = () => {
 
             <Link
               to="/signup"
-              className="font-medium text-blue-600 hover:text-blue-700"
+              className="font-medium text-blue-600! underline hover:text-blue-700!"
             >
               Créer un compte
             </Link>

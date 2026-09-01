@@ -1,10 +1,8 @@
 import { useState, useMemo } from "react";
-import Button from "@/components/ui/Button";
 import GlobalStatCard from "./GlobalStatCard";
 
 import {
-  ChevronRight,
-  Lightbulb,
+  
   ChevronDown,
 } from "lucide-react";
 
@@ -60,83 +58,6 @@ const Dashboard = () => {
         </p>
       </section>
 
-      {/* =====================================================
-          MILESTONE BANNER
-      ===================================================== */}
-
-      <section
-        className="
-          mt-4
-          flex
-          w-full
-          flex-col
-          gap-3
-          rounded-2xl
-          bg-gray-100
-          px-4
-          py-3
-
-          sm:flex-row
-          sm:items-center
-          sm:justify-between
-          sm:rounded-full
-          sm:px-5
-          sm:py-2
-
-          lg:px-6
-        "
-      >
-
-        {/* Message */}
-
-        <div
-          className="
-            flex
-            min-w-0
-            items-start
-            gap-2
-
-            sm:items-center
-          "
-        >
-
-          <Lightbulb
-            size={17}
-            strokeWidth={1.8}
-            className="mt-0.5 shrink-0 text-gray-700 sm:mt-0"
-          />
-
-          <p className="min-w-0 text-[11px]! leading-4 text-gray-500 sm:text-[12px]! lg:text-sm!">
-
-            Upload 1 more document to increase earnings by{" "}
-
-            <span className="ml-1 font-semibold text-green-500">
-              ~18%
-            </span>
-
-          </p>
-
-        </div>
-
-        {/* Action */}
-
-        <Button
-          className="
-            flex
-            w-full
-            shrink-0
-            items-center
-            justify-center
-            gap-1.5
-
-            sm:w-auto
-          "
-        >
-          Take Action
-          <ChevronRight size={16} />
-        </Button>
-
-      </section>
 
       {/* =====================================================
           DASHBOARD GRID

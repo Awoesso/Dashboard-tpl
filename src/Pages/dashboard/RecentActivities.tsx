@@ -44,23 +44,24 @@ const activityStyles: Record<
 
 const RecentActivities = () => {
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-4">
+    <section className="w-full min-w-0 rounded-2xl border border-gray-200 bg-white p-3.5 sm:p-4">
 
       {/* Header */}
 
-      <div className="flex items-center justify-between">
+      <div className="flex min-w-0 items-center justify-between gap-3">
 
-        <h2 className="font-heading !text-[15px] font-semibold tracking-tight text-gray-900">
+        <h2 className="min-w-0 truncate font-heading !text-[15px] font-semibold tracking-tight text-gray-900">
           Recent Activities
         </h2>
 
         <button
           type="button"
           className="
+            shrink-0
             rounded-full
             border border-gray-200
             px-2.5 py-1
-            text-xs
+            !text-xs
             font-medium
             text-gray-700
             transition-colors
@@ -74,20 +75,22 @@ const RecentActivities = () => {
 
       {/* Filter */}
 
-      <div className="mt-3 flex gap-1.5 rounded-full border border-gray-200 bg-gray-50 p-1">
+      <div className="mt-3 flex w-full gap-1 rounded-full border border-gray-200 bg-gray-50 p-1 sm:gap-1.5">
 
         <button
           type="button"
           className="
+            min-w-0
             flex-1
             rounded-full
             border border-gray-200
             bg-white
-            py-2
-            text-[11.5px]
+            px-1.5 py-2
+            !text-[11px]
             font-semibold
             text-gray-800
             shadow-sm
+            sm:!text-[11.5px]
           "
         >
           Today
@@ -96,15 +99,17 @@ const RecentActivities = () => {
         <button
           type="button"
           className="
+            min-w-0
             flex-1
             rounded-full
             border border-transparent
-            py-2
-            text-[11.5px]
+            px-1.5 py-2
+            !text-[11px]
             font-semibold
             text-gray-500
             transition-colors
             hover:text-gray-700
+            sm:!text-[11.5px]
           "
         >
           Yesterday
@@ -113,15 +118,17 @@ const RecentActivities = () => {
         <button
           type="button"
           className="
+            min-w-0
             flex-1
             rounded-full
             border border-transparent
-            py-2
-            text-[11.5px]
+            px-1.5 py-2
+            !text-[11px]
             font-semibold
             text-gray-500
             transition-colors
             hover:text-gray-700
+            sm:!text-[11.5px]
           "
         >
           This Week
@@ -140,14 +147,22 @@ const RecentActivities = () => {
           return (
             <div
               key={activity.id}
-              className="flex items-center gap-2.5 py-2.5"
+              className="
+                flex
+                min-w-0
+                items-center
+                gap-2
+                py-2.5
+                sm:gap-2.5
+              "
             >
 
               {/* Icon */}
 
               <div
                 className={`
-                  flex h-7 w-7
+                  flex
+                  h-7 w-7
                   shrink-0
                   items-center justify-center
                   rounded-full
@@ -165,7 +180,7 @@ const RecentActivities = () => {
 
               <div className="min-w-0 flex-1">
 
-                <p className="truncate  text-[12px] font-medium text-gray-800">   
+                <p className="truncate !text-[12px] font-medium text-gray-800">
                   {activity.title}
                 </p>
 
@@ -177,7 +192,18 @@ const RecentActivities = () => {
 
               {/* Time */}
 
-              <span className="shrink-0 text-[10px] font-semibold text-gray-700">
+              <span
+                className="
+                  max-w-[55px]
+                  shrink-0
+                  truncate
+                  !text-[9px]
+                  font-semibold
+                  text-gray-700
+                  sm:max-w-none
+                  sm:!text-[10px]
+                "
+              >
                 {activity.time}
               </span>
 

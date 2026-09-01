@@ -21,7 +21,10 @@ type TooltipProps = {
   }[];
 };
 
-const CustomTooltip = ({ active, payload }: TooltipProps) => {
+const CustomTooltip = ({
+  active,
+  payload,
+}: TooltipProps) => {
   if (!active || !payload?.length) {
     return null;
   }
@@ -29,34 +32,46 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
   const data = payload[0].payload;
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 shadow-lg">
-
+    <div
+      className="
+        min-w-[145px]
+        rounded-xl
+        border border-gray-200
+        bg-white
+        px-3 py-2.5
+        shadow-lg
+      "
+    >
       {/* Month */}
 
-      <p className="mb-2 font-heading text-[10px] font-semibold text-gray-900">
+      <p className="mb-2 font-heading !text-[10px] font-semibold text-gray-900">
         {data.month}
       </p>
 
       {/* Metrics */}
 
-      <div className="space-y-1">
+      <div className="space-y-1.5">
 
-        <div className="flex items-center justify-between gap-6">
-          <span className="text-[9px] font-normal text-gray-500">
+        {/* Earnings */}
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="!text-[9px] font-normal text-gray-500">
             Earnings
           </span>
 
-          <span className="font-mono text-[9px] font-medium text-gray-900">
+          <span className="font-mono !text-[9px] font-medium text-gray-900">
             {data.earnings.toLocaleString()} XOF
           </span>
         </div>
 
-        <div className="flex items-center justify-between gap-6">
-          <span className="text-[9px] font-normal text-gray-500">
+        {/* Downloads */}
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="!text-[9px] font-normal text-gray-500">
             Downloads
           </span>
 
-          <span className="font-mono text-[9px] font-medium text-gray-900">
+          <span className="font-mono !text-[9px] font-medium text-gray-900">
             {data.downloads}
           </span>
         </div>
@@ -68,81 +83,135 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
 
 const DashChart = () => {
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-4">
+    <section
+      className="
+        w-full
+        min-w-0
+        overflow-hidden
+        rounded-2xl
+        border border-gray-200
+        bg-white
+        p-3.5
+        sm:p-4
+      "
+    >
 
-      {/* Header */}
+      {/* ================= HEADER ================= */}
 
-      <div className="flex items-start justify-between">
+      <div
+        className="
+          flex
+          min-w-0
+          flex-col
+          gap-3
+          sm:flex-row
+          sm:items-start
+          sm:justify-between
+        "
+      >
 
-        <div>
-          <h2 className="font-heading !text-[15px] font-semibold  tracking-tight text-gray-900">
+        {/* Title */}
+
+        <div className="min-w-0">
+
+          <h2
+            className="
+              truncate
+              font-heading
+              !text-[15px]
+              font-semibold
+              tracking-tight
+              text-gray-900
+            "
+          >
             Analytics & Performances
           </h2>
 
           <p className="mt-0.5 !text-[12px] font-normal text-gray-500">
             Understand your earnings and downloads
           </p>
+
         </div>
+
+        {/* Period */}
 
         <button
           type="button"
           className="
-            flex items-center gap-2
+            flex
+            w-fit
+            shrink-0
+            items-center
+            gap-2
             rounded-full
             border border-gray-200
             bg-white
             px-3 py-1.5
-            text-xs
+            !text-xs
             font-medium
             text-gray-700
             transition-colors
             hover:bg-gray-50
+            focus:outline-none
           "
         >
           1 year
 
-          <span className="text-[9px] font-normal text-gray-400">
+          <span className="!text-[9px] font-normal text-gray-400">
             ▼
           </span>
         </button>
 
       </div>
 
-      {/* Legend */}
+      {/* ================= LEGEND ================= */}
 
-      <div className="mt-4 flex items-center gap-5">
+      <div className="mt-4 flex items-center gap-4 sm:gap-5">
 
         <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-blue-600" />
 
-          <span className="text-[10px] font-medium text-gray-600">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-blue-600" />
+
+          <span className="!text-[10px] font-medium text-gray-600">
             Earnings
           </span>
+
         </div>
 
-       
       </div>
 
-      {/* Chart */}
+      {/* ================= CHART ================= */}
 
-      <div className="mt-4 h-[240px] w-full">
+      <div
+        className="
+          mt-3
+          h-[210px]
+          w-full
+          min-w-0
+          sm:mt-4
+          sm:h-[240px]
+        "
+      >
 
-        <ResponsiveContainer width="100%" height="100%">
-
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+        >
           <BarChart
             data={chartData}
             margin={{
               top: 10,
               right: 5,
-              left: -15,
+              left: -18,
               bottom: 0,
             }}
             barCategoryGap="12%"
           >
 
-            {/* Gradient */}
+            {/* ================= GRADIENT ================= */}
 
             <defs>
+
               <linearGradient
                 id="earningsGradient"
                 x1="0"
@@ -150,6 +219,7 @@ const DashChart = () => {
                 x2="0"
                 y2="1"
               >
+
                 <stop
                   offset="0%"
                   stopColor="#3b82f6"
@@ -164,10 +234,12 @@ const DashChart = () => {
                   offset="100%"
                   stopColor="#172554"
                 />
+
               </linearGradient>
+
             </defs>
 
-            {/* Grid */}
+            {/* ================= GRID ================= */}
 
             <CartesianGrid
               vertical={false}
@@ -175,36 +247,38 @@ const DashChart = () => {
               strokeDasharray="3 3"
             />
 
-            {/* X Axis */}
+            {/* ================= X AXIS ================= */}
 
             <XAxis
               dataKey="month"
               axisLine={false}
               tickLine={false}
               tick={{
-                fontSize: 10,
+                fontSize: 9,
                 fill: "#6b7280",
               }}
-              dy={8}
+              dy={7}
+              interval="preserveStartEnd"
             />
 
-            {/* Y Axis */}
+            {/* ================= Y AXIS ================= */}
 
             <YAxis
               axisLine={false}
               tickLine={false}
+              width={35}
               tick={{
-                fontSize: 9,
+                fontSize: 8,
                 fill: "#9ca3af",
               }}
-              tickFormatter={(value) =>
+              tickFormatter={(value: number) =>
                 value >= 1000
                   ? `${value / 1000}k`
-                  : value
+                  : `${value}`
               }
             />
 
-            {/* Tooltip */}
+            {/* ================= TOOLTIP ================= */}
 
             <Tooltip
               cursor={{
@@ -213,7 +287,7 @@ const DashChart = () => {
               content={<CustomTooltip />}
             />
 
-            {/* Bars */}
+            {/* ================= BAR ================= */}
 
             <Bar
               dataKey="earnings"
@@ -223,10 +297,11 @@ const DashChart = () => {
               animationBegin={100}
               animationDuration={800}
               animationEasing="ease-out"
+              activeBar={false}
+              className="outline-none"
             />
 
           </BarChart>
-
         </ResponsiveContainer>
 
       </div>

@@ -17,47 +17,80 @@ const StatCard = ({
   const formattedValue = value.toLocaleString();
 
   return (
-    <div className="flex flex-1 flex-col justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-xs transition-colors duration-150 hover:border-gray-300">
+    <div
+      className="
+        flex
+        min-w-0
+        flex-1
+        flex-col
+        justify-between
+        rounded-xl
+        border border-gray-200
+        bg-white
+        px-3.5 py-3
+        shadow-xs
+        transition-colors
+        duration-150
+        hover:border-gray-300
+        sm:px-4
+      "
+    >
 
       {/* Header */}
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-xs font-semibold text-gray-700">
+
+      <div className="flex min-w-0 items-center justify-between gap-2">
+
+        <p className="min-w-0 truncate !text-xs font-semibold text-gray-700">
           {title}
         </p>
 
         {period && (
-          <span className="text-[10px] font-normal text-gray-400">
+          <span className="shrink-0 !text-[10px] font-normal text-gray-400">
             {period}
           </span>
         )}
+
       </div>
 
-      {/* Value */}
-      <div className="mt-2 flex items-end gap-2.5">
+      {/* Value + Change */}
 
-        <p className="font-mono text-lg font-semibold tracking-tight text-gray-900">
+      <div className="mt-2 flex min-w-0 items-end gap-2">
+
+        <p className="min-w-0 truncate font-mono !text-lg font-semibold tracking-tight text-gray-900 sm:!text-[20px]">
+
           {currency && (
-            <span className="mr-1 font-sans text-sm font-medium text-gray-600">
+            <span className="mr-1 font-sans !text-sm font-medium text-gray-600">
               {currency}
             </span>
           )}
 
           {formattedValue}
+
         </p>
 
         {/* Change */}
+
         <span
-          className={`mb-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-            isPositive
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
+          className={`
+            mb-0.5
+            shrink-0
+            rounded-full
+            px-1.5 py-0.5
+            !text-[10px]
+            font-medium
+            ${
+              isPositive
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }
+          `}
         >
           {isPositive ? "+" : ""}
           {change}%
         </span>
 
       </div>
+
     </div>
   );
 };

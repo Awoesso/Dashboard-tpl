@@ -3,7 +3,17 @@ import { dashboardConfig } from "./data/dashboardConfig";
 
 const GlobalStatCard = () => {
   return (
-    <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-4">
+    <div
+      className="
+        mt-4
+        grid
+        min-w-0
+        grid-cols-1
+        gap-3
+        sm:grid-cols-2
+        xl:grid-cols-4
+      "
+    >
       {dashboardConfig.metrics.map((metric) => (
         <StatCard
           key={metric.id}
