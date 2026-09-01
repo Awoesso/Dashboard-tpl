@@ -11,15 +11,19 @@ import Settings from "./Pages/settings/Settings";
 
 import SignIn from "./Pages/auth/SignIn";
 import SignUp from "./Pages/auth/SignUp";
+import NotFound from "./Pages/NotFound";
+import ErrorFallback from "./Pages/ErrorFallback";
 
 export const router = createBrowserRouter([
   {
     path: "/",
+    errorElement: <ErrorFallback />,
     element: <Navigate to="/dashboard" replace />,
   },
 
   {
     path: "/signin",
+    errorElement: <ErrorFallback />,
     element: (
       <PublicRoute>
         <SignIn />
@@ -29,6 +33,7 @@ export const router = createBrowserRouter([
 
   {
     path: "/signup",
+    errorElement: <ErrorFallback />,
     element: (
       <PublicRoute>
         <SignUp />
@@ -38,6 +43,7 @@ export const router = createBrowserRouter([
 
   {
     path: "/dashboard",
+    errorElement: <ErrorFallback />,
     element: (
       <ProtectedRoute>
         <DashboardLayout />
@@ -51,18 +57,21 @@ export const router = createBrowserRouter([
 
       {
         path: "home",
+        errorElement: <ErrorFallback />,
         element: <Dashboard />,
       },
 
       {
         path: "settings",
+        errorElement: <ErrorFallback />,
         element: <Settings />,
       },
     ],
   },
 
+  // Catch-all 404 route
   {
     path: "*",
-    element: <Navigate to="/signin" replace />,
+    element: <NotFound />,
   },
 ]);

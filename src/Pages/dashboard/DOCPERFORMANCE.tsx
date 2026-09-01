@@ -17,7 +17,7 @@ type Document = {
 const columns = [
   "Products",
   "Price",
-  "Downloads",
+  "Sales",
   "Earnings",
   "Status",
 ];
@@ -75,7 +75,7 @@ const DOCPERFORMANCE = () => {
           </div>
 
           <h2 className="!text-[14px] font-semibold text-gray-900">
-            How Your Documents Are Performing
+       Top Selling Products
           </h2>
 
         </div>
@@ -128,7 +128,7 @@ const DOCPERFORMANCE = () => {
 
         {!loading && !error && documents.length === 0 && (
           <div className="py-8 text-center text-[11px] text-gray-400">
-            No documents found.
+            No products found.
           </div>
         )}
 

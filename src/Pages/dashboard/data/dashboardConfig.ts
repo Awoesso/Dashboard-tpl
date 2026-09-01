@@ -16,13 +16,13 @@ export const dashboardConfig: DashboardConfig<
       id: "earnings",
       label: "Total Earnings",
       value: 138450,
-      currency: "xof",
+      currency: "XOF",
       change: 23,
     period:""
     },
     {
       id: "downloads",
-      label: " Downloads",
+      label: " Total Orders",
       value: 284,
       change: 18,
     period:""

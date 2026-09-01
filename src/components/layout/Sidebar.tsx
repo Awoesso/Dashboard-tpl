@@ -4,9 +4,7 @@ import {
   Store,
   Package,
   Wallet,
-  Download,
   Trophy,
-  UserCircle,
   Settings,
   CircleHelp,
   Search,
@@ -42,17 +40,10 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
       icon: Package,
     },
     {
-      label: "Earnings",
+      label: "Finance",
       icon: Wallet,
     },
-    {
-      label: "My Downloads",
-      icon: Download,
-    },
-    {
-      label: "Wallet",
-      icon: Wallet,
-    },
+  
     {
       label: "Leaderboard",
       icon: Trophy,
@@ -60,10 +51,7 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
   ];
 
   const supportItems = [
-    {
-      label: "Profile",
-      icon: UserCircle,
-    },
+   
     {
       label: "Settings",
       icon: Settings,

@@ -1,41 +1,55 @@
-export type DocumentStatus = "Published" | "Draft";
+/**
+ * Documents/Products data for dashboard table
+ */
 
 export interface DocumentItem {
   id: string;
   name: string;
-  image: string;
-  price: number;
-  downloads: number;
+  category: string;
   earnings: number;
-  status: DocumentStatus;
+  downloads: number;
+  status: 'active' | 'inactive' | 'pending';
 }
 
 export const documentsData: DocumentItem[] = [
   {
-    id: "doc-1",
-    name: "CHM 112 - Lab Report Template",
-    image: "/b.png",
-    price: 1495,
-    downloads: 12,
-    earnings: 20930,
-    status: "Published",
+    id: "doc-001",
+    name: "Advanced TypeScript Guide",
+    category: "Programming",
+    earnings: 12500,
+    downloads: 145,
+    status: "active",
   },
   {
-    id: "doc-2",
-    name: "ECO 304 - Exam Prep Notes",
-    image: "/b.png",
-    price: 2990,
-    downloads: 6,
-    earnings: 17940,
-    status: "Draft",
+    id: "doc-002",
+    name: "React Best Practices",
+    category: "Web Development",
+    earnings: 18900,
+    downloads: 234,
+    status: "active",
   },
   {
-    id: "doc-3",
-    name: "BIO 201 - Study Guide",
-    image: "/b.png",
-    price: 2490,
-    downloads: 18,
-    earnings: 44820,
-    status: "Published",
+    id: "doc-003",
+    name: "Python Data Science",
+    category: "Data Science",
+    earnings: 9800,
+    downloads: 89,
+    status: "active",
+  },
+  {
+    id: "doc-004",
+    name: "Cloud Architecture Basics",
+    category: "Infrastructure",
+    earnings: 15600,
+    downloads: 112,
+    status: "pending",
+  },
+  {
+    id: "doc-005",
+    name: "Web Security Essentials",
+    category: "Security",
+    earnings: 8400,
+    downloads: 67,
+    status: "active",
   },
 ];

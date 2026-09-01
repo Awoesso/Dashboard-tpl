@@ -56,15 +56,15 @@ const StatCard = ({
 
       <div className="mt-2 flex min-w-0 items-end gap-2">
 
-        <p className="min-w-0 truncate font-mono !text-lg font-semibold tracking-tight text-gray-900 sm:!text-[20px]">
-
+        <p className="min-w-0 truncate font-mono !text-sm font-semibold tracking-tight text-gray-900 sm:!text-[20px]">
+ 
           {currency && (
             <span className="mr-1 font-sans !text-sm font-medium text-gray-600">
               {currency}
             </span>
           )}
-
-          {formattedValue}
+  {formattedValue}
+       
 
         </p>
 
