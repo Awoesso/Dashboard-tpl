@@ -5,10 +5,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
+
 import type { Session } from "@supabase/supabase-js";
 
 import { supabase } from "@/lib/supabase";
-import { useRateLimit } from "@/lib/rateLimiting";
+import { rateLimit } from "@/lib/rateLimiting";
 import { storeCSRFToken } from "@/lib/csrf";
 
 interface AuthResponse {
@@ -20,20 +21,25 @@ interface AuthResponse {
 type AuthContextType = {
   session: Session | null;
   isLoading: boolean;
+
   signUpNewUser: (
     email: string,
     password: string,
     firstName: string,
     lastName: string
   ) => Promise<AuthResponse>;
+
   signInUser: (
     email: string,
     password: string
   ) => Promise<AuthResponse>;
+
   signOut: () => Promise<void>;
 };
 
-const Authcontext = createContext<AuthContextType | undefined>(undefined);
+const Authcontext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 type AuthcontextProviderProps = {
   children: ReactNode;
@@ -52,12 +58,21 @@ export const AuthcontextProvider = ({
   const signUpNewUser = async (
     email: string,
     password: string,
-    _firstName: string,
-    _lastName: string
+    firstName: string,
+    lastName: string
   ): Promise<AuthResponse> => {
     try {
-      // Rate limiting: max 3 signup attempts per minute
-      const rateLimitResult = useRateLimit(`signup-${email}`, 3, 60000);
+      const cleanEmail = email.trim();
+      const cleanFirstName = firstName.trim();
+      const cleanLastName = lastName.trim();
+
+      // Rate limiting
+      const rateLimitResult = rateLimit(
+        `signup-${cleanEmail}`,
+        3,
+        60000
+      );
+
       if (!rateLimitResult.allowed) {
         return {
           success: false,
@@ -65,14 +80,22 @@ export const AuthcontextProvider = ({
         };
       }
 
-      // Ensure CSRF token is available
+      // CSRF token
       storeCSRFToken();
 
+      // Create Supabase account
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: cleanEmail,
         password,
+        options: {
+          data: {
+            first_name: cleanFirstName,
+            last_name: cleanLastName,
+          },
+        },
       });
 
+      // Supabase error
       if (error) {
         return {
           success: false,
@@ -85,9 +108,16 @@ export const AuthcontextProvider = ({
         data,
       };
     } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error("Signup error:", error);
+      }
+
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'An error occurred',
+        error:
+          error instanceof Error
+            ? error.message
+            : "An error occurred during signup.",
       };
     }
   };
@@ -101,8 +131,15 @@ export const AuthcontextProvider = ({
     password: string
   ): Promise<AuthResponse> => {
     try {
-      // Rate limiting: max 5 login attempts per minute
-      const rateLimitResult = useRateLimit(`signin-${email}`, 5, 60000);
+      const cleanEmail = email.trim();
+
+      // Rate limiting
+      const rateLimitResult = rateLimit(
+        `signin-${cleanEmail}`,
+        5,
+        60000
+      );
+
       if (!rateLimitResult.allowed) {
         return {
           success: false,
@@ -110,14 +147,17 @@ export const AuthcontextProvider = ({
         };
       }
 
-      // Ensure CSRF token is available
+      // CSRF token
       storeCSRFToken();
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      // Login
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password,
+        });
 
+      // Supabase error
       if (error) {
         return {
           success: false,
@@ -130,9 +170,16 @@ export const AuthcontextProvider = ({
         data,
       };
     } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error("Signin error:", error);
+      }
+
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'An error occurred',
+        error:
+          error instanceof Error
+            ? error.message
+            : "An error occurred during signin.",
       };
     }
   };
@@ -148,12 +195,15 @@ export const AuthcontextProvider = ({
           data: { session },
         } = await supabase.auth.getSession();
 
-        setSession(session ?? null);
+        setSession(session);
       } catch (error) {
-        // Log only in development
         if (import.meta.env.DEV) {
-          console.error('Error fetching session:', error);
+          console.error(
+            "Error fetching session:",
+            error
+          );
         }
+
         setSession(null);
       } finally {
         setIsLoading(false);
@@ -164,10 +214,12 @@ export const AuthcontextProvider = ({
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session ?? null);
-      setIsLoading(false);
-    });
+    } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+        setIsLoading(false);
+      }
+    );
 
     return () => {
       subscription.unsubscribe();
@@ -178,7 +230,7 @@ export const AuthcontextProvider = ({
   // SIGN OUT
   // =========================
 
-  const signOut = async () => {
+  const signOut = async (): Promise<void> => {
     try {
       const { error } = await supabase.auth.signOut();
 
@@ -189,11 +241,19 @@ export const AuthcontextProvider = ({
       setSession(null);
     } catch (error) {
       if (import.meta.env.DEV) {
-        console.error('Error signing out:', error);
+        console.error(
+          "Error signing out:",
+          error
+        );
       }
+
       throw error;
     }
   };
+
+  // =========================
+  // PROVIDER
+  // =========================
 
   return (
     <Authcontext.Provider
@@ -209,6 +269,10 @@ export const AuthcontextProvider = ({
     </Authcontext.Provider>
   );
 };
+
+// =========================
+// USER AUTH
+// =========================
 
 export const UserAuth = () => {
   const context = useContext(Authcontext);

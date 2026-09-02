@@ -27,7 +27,7 @@ export const chartData: ChartDataItem[] = [
   },
   {
     month: "May",
-    earnings: 32000,
+    earnings: 60000,
     downloads: 24,
   },
   {

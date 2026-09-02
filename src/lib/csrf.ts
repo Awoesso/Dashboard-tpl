@@ -19,10 +19,7 @@ export const isValidOrigin = (origin: string | null, allowedOrigins?: string[]):
   return allowed.includes(origin);
 };
 
-/**
- * Generate CSRF token (simple implementation)
- * In production, generate on server and send to client
- */
+
 export const generateCSRFToken = (): string => {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);

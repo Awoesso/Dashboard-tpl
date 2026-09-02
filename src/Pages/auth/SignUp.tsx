@@ -134,7 +134,7 @@ const SignUp = () => {
   if (signupSuccess) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-8 sm:px-6 sm:py-10">
-        <div className="w-full max-w-[420px]">
+        <div className="w-full max-w-105">
 
           {/* ================= LOGO ================= */}
 
@@ -153,7 +153,7 @@ const SignUp = () => {
               Vérifiez votre email
             </h1>
 
-            <p className="mx-auto mt-2 max-w-[340px] text-[12px]! leading-5 text-gray-500 sm:text-[13px]!">
+            <p className="mx-auto mt-2 max-w-85 text-[12px]! leading-5 text-gray-500 sm:text-[13px]!">
               Nous avons envoyé un lien de vérification
               à votre adresse email.
             </p>
@@ -183,7 +183,7 @@ const SignUp = () => {
                 Confirmez votre adresse
               </h2>
 
-              <p className="mx-auto mt-2 max-w-[330px] text-[11px]! leading-5 text-gray-500 sm:text-[12px]!">
+              <p className="mx-auto mt-2 max-w-82.5 text-[11px]! leading-5 text-gray-500 sm:text-[12px]!">
                 Cliquez sur le lien envoyé à
               </p>
 
@@ -191,7 +191,7 @@ const SignUp = () => {
                 {verificationEmail}
               </p>
 
-              <p className="mx-auto mt-3 max-w-[330px] text-[10px]! leading-5 text-gray-400 sm:text-[11px]!">
+              <p className="mx-auto mt-3 max-w-82.5 text-[10px]! leading-5 text-gray-400 sm:text-[11px]!">
                 Après avoir vérifié votre adresse email,
                 vous pourrez vous connecter à votre compte.
               </p>
@@ -235,7 +235,7 @@ const SignUp = () => {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-8 sm:px-6 sm:py-10">
-      <div className="w-full max-w-[420px]">
+      <div className="w-full max-w-105">
 
         {/* ================= LOGO ================= */}
 
@@ -254,7 +254,7 @@ const SignUp = () => {
             Créez votre compte
           </h1>
 
-          <p className="mx-auto mt-2 max-w-[340px] text-[12px]! leading-5 text-gray-500 sm:text-[13px]!">
+          <p className="mx-auto mt-2 max-w-85 text-[12px]! leading-5 text-gray-500 sm:text-[13px]!">
             Créez un compte pour accéder à votre tableau de bord.
           </p>
         </div>

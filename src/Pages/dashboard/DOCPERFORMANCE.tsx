@@ -74,7 +74,7 @@ const DOCPERFORMANCE = () => {
             />
           </div>
 
-          <h2 className="!text-[14px] font-semibold text-gray-900">
+          <h2 className="text-[14px]! font-semibold text-gray-900">
        Top Selling Products
           </h2>
 
@@ -95,7 +95,7 @@ const DOCPERFORMANCE = () => {
 
         {/* Table Header */}
 
-        <div className="grid grid-cols-[1.8fr_0.8fr_0.7fr_0.9fr_0.7fr] rounded-[8px] border border-gray-200 bg-gray-50 px-3 py-2">
+        <div className="grid grid-cols-[1.8fr_0.8fr_0.7fr_0.9fr_0.7fr] rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
 
           {columns.map((column) => (
             <span

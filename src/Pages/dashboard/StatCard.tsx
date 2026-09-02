@@ -40,12 +40,12 @@ const StatCard = ({
 
       <div className="flex min-w-0 items-center justify-between gap-2">
 
-        <p className="min-w-0 truncate !text-xs font-semibold text-gray-700">
+        <p className="min-w-0 truncate text-xs! font-semibold text-gray-700">
           {title}
         </p>
 
         {period && (
-          <span className="shrink-0 !text-[10px] font-normal text-gray-400">
+          <span className="shrink-0 text-[10px]! font-normal text-gray-400">
             {period}
           </span>
         )}
@@ -56,10 +56,10 @@ const StatCard = ({
 
       <div className="mt-2 flex min-w-0 items-end gap-2">
 
-        <p className="min-w-0 truncate font-mono !text-sm font-semibold tracking-tight text-gray-900 sm:!text-[20px]">
+        <p className="min-w-0 truncate font-mono text-sm! font-semibold tracking-tight text-gray-900 sm:text-[20px]!">
  
           {currency && (
-            <span className="mr-1 font-sans !text-sm font-medium text-gray-600">
+            <span className="mr-1 font-sans text-sm! font-medium text-gray-600">
               {currency}
             </span>
           )}
@@ -76,7 +76,7 @@ const StatCard = ({
             shrink-0
             rounded-full
             px-1.5 py-0.5
-            !text-[10px]
+            text-[10px]!
             font-medium
             ${
               isPositive

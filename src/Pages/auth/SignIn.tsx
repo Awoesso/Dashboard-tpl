@@ -119,7 +119,7 @@ const SignIn = () => {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-8 sm:px-6 sm:py-10">
 
-      <div className="w-full max-w-[420px]">
+      <div className="w-full max-w-105">
 
         {/* ================= LOGO ================= */}
 
@@ -139,7 +139,7 @@ const SignIn = () => {
             Bon retour
           </h1>
 
-          <p className="mx-auto mt-2 max-w-[340px] text-[12px]! leading-5 text-gray-500 sm:text-[13px]!">
+          <p className="mx-auto mt-2 max-w-85 text-[12px]! leading-5 text-gray-500 sm:text-[13px]!">
             Connectez-vous pour accéder à votre tableau de bord.
           </p>
 
@@ -410,7 +410,7 @@ const SignIn = () => {
 
         {/* ================= FOOTER ================= */}
 
-        <p className="mx-auto mt-4 max-w-[360px] text-center text-[9px]! leading-4 text-gray-400 sm:mt-5 sm:text-[10px]!">
+        <p className="mx-auto mt-4 max-w-90 text-center text-[9px]! leading-4 text-gray-400 sm:mt-5 sm:text-[10px]!">
           En vous connectant, vous acceptez nos conditions
           d'utilisation et notre politique de confidentialité.
         </p>

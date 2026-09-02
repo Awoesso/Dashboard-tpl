@@ -6,14 +6,17 @@ import "./index.css";
 import { router } from "./router";
 import { AuthcontextProvider } from "./Context/Authcontext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-
+import { ProfileProvider } from "./Context/ProfileContext";
 ReactDOM.createRoot(
   document.getElementById("root")!
 ).render(
   <React.StrictMode>
     <ErrorBoundary>
       <AuthcontextProvider>
-        <RouterProvider router={router} />
+        <ProfileProvider>
+             <RouterProvider router={router} />
+             </ProfileProvider>
+     
       </AuthcontextProvider>
     </ErrorBoundary>
   </React.StrictMode>

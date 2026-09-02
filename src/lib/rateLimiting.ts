@@ -1,57 +1,95 @@
 /**
- * Rate limiting hook to prevent excessive API calls
- * Implements simple throttling and debouncing mechanisms
+ * Rate limiting utilities
+ * Prevents excessive API calls
  */
 
-const requestCounts = new Map<string, { count: number; resetTime: number }>();
+const requestCounts = new Map<
+  string,
+  {
+    count: number;
+    resetTime: number;
+  }
+>();
 
-export const useRateLimit = (key: string, maxRequests: number = 5, windowMs: number = 60000) => {
+export const rateLimit = (
+  key: string,
+  maxRequests: number = 5,
+  windowMs: number = 60000
+) => {
   const now = Date.now();
   const entry = requestCounts.get(key);
 
+  // No existing window or window expired
   if (!entry || now > entry.resetTime) {
-    // Reset window
-    requestCounts.set(key, { count: 1, resetTime: now + windowMs });
-    return { allowed: true, remaining: maxRequests - 1 };
+    requestCounts.set(key, {
+      count: 1,
+      resetTime: now + windowMs,
+    });
+
+    return {
+      allowed: true,
+      remaining: maxRequests - 1,
+      waitSeconds: 0,
+    };
   }
 
+  // Limit reached
   if (entry.count >= maxRequests) {
-    const waitSeconds = Math.ceil((entry.resetTime - now) / 1000);
-    return { allowed: false, remaining: 0, waitSeconds };
+    const waitSeconds = Math.ceil(
+      (entry.resetTime - now) / 1000
+    );
+
+    return {
+      allowed: false,
+      remaining: 0,
+      waitSeconds,
+    };
   }
 
+  // Increment request count
   entry.count++;
-  return { allowed: true, remaining: maxRequests - entry.count };
+
+  return {
+    allowed: true,
+    remaining: maxRequests - entry.count,
+    waitSeconds: 0,
+  };
 };
 
 /**
- * Debounce function to limit function execution frequency
+ * Debounce function
  */
-export const debounce = <T extends (...args: unknown[]) => unknown>(
+export const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  return function (...args: Parameters<T>) {
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
+  return (...args: Parameters<T>) => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(() => {
+      func(...args);
+    }, wait);
   };
 };
 
 /**
- * Throttle function to limit function execution to once per interval
+ * Throttle function
  */
-export const throttle = <T extends (...args: unknown[]) => unknown>(
+export const throttle = <T extends (...args: any[]) => any>(
   func: T,
   limit: number
 ): ((...args: Parameters<T>) => void) => {
-  let inThrottle: boolean;
+  let inThrottle = false;
 
-  return function (...args: Parameters<T>) {
+  return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
+
       setTimeout(() => {
         inThrottle = false;
       }, limit);

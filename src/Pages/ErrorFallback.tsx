@@ -19,13 +19,11 @@ export const ErrorFallback = () => {
       ? error.message
       : 'Une erreur inattendue est survenue.';
 
-  const stackTrace = error instanceof Error ? error.stack : JSON.stringify(error, null, 2);
-
   return (
     <main className="min-h-screen w-full bg-slate-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       {/* Halo lumineux d'arrière-plan */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
-        <div className="w-[500px] h-[500px] bg-red-500/5 rounded-full blur-3xl" />
+        <div className="w-125 h-125 bg-red-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-lg bg-white rounded-2xl border border-slate-200/80 shadow-xl shadow-slate-200/50 p-6 sm:p-8 transition-all">
@@ -48,21 +46,7 @@ export const ErrorFallback = () => {
           </p>
         </div>
 
-        {/* Console de Debug (Environnement de dév) */}
-        {import.meta.env.DEV && (
-          <details className="mt-6 group rounded-xl border border-slate-200 bg-slate-50/80 overflow-hidden transition-all">
-            <summary className="flex cursor-pointer items-center justify-between px-4 py-3 text-xs font-medium text-slate-700 hover:bg-slate-100/80 transition-colors select-none">
-              <span>Détails techniques (Mode Dev)</span>
-              <span className="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div className="px-4 pb-4 pt-1 border-t border-slate-200/60">
-              <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-slate-900 p-3 text-[11px] font-mono text-red-300 leading-relaxed whitespace-pre-wrap break-all select-all">
-                {stackTrace}
-              </pre>
-            </div>
-          </details>
-        )}
-
+    
         {/* Actions Réseau & Navigation */}
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full">
           {/* Action 1 : Retour en arrière */}
