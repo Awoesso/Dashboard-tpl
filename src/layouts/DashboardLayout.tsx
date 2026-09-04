@@ -7,8 +7,7 @@ import { UserAuth } from "../Context/Authcontext";
 
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] =
-    useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const { isLoading } = UserAuth();
 
@@ -48,8 +47,9 @@ const DashboardLayout = () => {
       <div
         className={`
           hidden!
-          min-h-screen!
+          h-screen!
           w-full!
+          overflow-hidden!
           lg:grid!
           lg:transition-[grid-template-columns]!
           lg:duration-300!
@@ -66,10 +66,10 @@ const DashboardLayout = () => {
           onToggle={handleToggleSidebar}
         />
 
-        <div className="min-w-0! w-full! overflow-x-hidden!">
+        <div className="flex! h-screen! flex-col! min-w-0! w-full! overflow-y-auto! overflow-x-hidden!">
           <Navbar />
 
-          <main className="min-w-0! w-full!">
+          <main className="min-w-0! w-full! flex-1!">
             <Outlet />
           </main>
         </div>

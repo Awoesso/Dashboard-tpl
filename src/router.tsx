@@ -2,7 +2,7 @@ import {
   createBrowserRouter,
   Navigate,
 } from "react-router-dom";
-
+import ProductsNew from "./Pages/products/ProductsNew";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 
@@ -60,7 +60,12 @@ export const router = createBrowserRouter([
         errorElement: <ErrorFallback />,
         element: <Dashboard />,
       },
+{
+  path: "products/new",
+          errorElement: <ErrorFallback />,
 
+  element: <ProductsNew />,
+},
       {
         path: "settings",
         errorElement: <ErrorFallback />,

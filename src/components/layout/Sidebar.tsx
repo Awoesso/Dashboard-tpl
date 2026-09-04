@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -20,13 +21,68 @@ interface SidebarProps {
   mobile?: boolean;
 }
 
+type SidebarItem = {
+  label: string;
+  icon: React.ElementType;
+  path: string;
+};
+
 const Sidebar = ({
   collapsed,
   onToggle,
   mobile = false,
 }: SidebarProps) => {
+  const primaryItems: SidebarItem[] = [
+    {
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/dashboard/home",
+    },
+    {
+      label: "Add a Product",
+      icon: PlusCircle,
+      path: "/dashboard/products/new",
+    },
+    {
+      label: "Marketplace",
+      icon: Store,
+      path: "/dashboard/marketplace",
+    },
+  ];
+
+  const creatorItems: SidebarItem[] = [
+    {
+      label: "My Products",
+      icon: Package,
+      path: "/dashboard/products",
+    },
+    {
+      label: "Finance",
+      icon: Wallet,
+      path: "/dashboard/finance",
+    },
+    {
+      label: "Leaderboard",
+      icon: Trophy,
+      path: "/dashboard/leaderboard",
+    },
+  ];
+
+  const supportItems: SidebarItem[] = [
+    {
+      label: "Settings",
+      icon: Settings,
+      path: "/dashboard/settings",
+    },
+    {
+      label: "Help & FAQ",
+      icon: CircleHelp,
+      path: "/dashboard/help",
+    },
+  ];
+
   /* =====================================================
-     ESCAPE = CLOSE MOBILE SIDEBAR
+      ESCAPE MOBILE
   ===================================================== */
 
   useEffect(() => {
@@ -52,75 +108,35 @@ const Sidebar = ({
   }, [mobile, onToggle]);
 
   /* =====================================================
-     NAVIGATION DATA
-  ===================================================== */
-
-  const primaryItems = [
-    {
-      label: "Dashboard",
-      icon: LayoutDashboard,
-      active: true,
-    },
-    {
-      label: "Add a Product",
-      icon: PlusCircle,
-    },
-    {
-      label: "Marketplace",
-      icon: Store,
-    },
-  ];
-
-  const creatorItems = [
-    {
-      label: "My Products",
-      icon: Package,
-    },
-    {
-      label: "Finance",
-      icon: Wallet,
-    },
-    {
-      label: "Leaderboard",
-      icon: Trophy,
-    },
-  ];
-
-  const supportItems = [
-    {
-      label: "Settings",
-      icon: Settings,
-    },
-    {
-      label: "Help & FAQ",
-      icon: CircleHelp,
-    },
-  ];
-
-  /* =====================================================
-     RENDER NAV ITEMS
+      NAV ITEMS
   ===================================================== */
 
   const renderItems = (
-    items: {
-      label: string;
-      icon: React.ElementType;
-      active?: boolean;
-    }[]
+    items: SidebarItem[]
   ) => {
     return items.map((item) => {
       const Icon = item.icon;
 
       return (
-        <button
-          key={item.label}
-          type="button"
+        <NavLink
+          key={item.path}
+          to={item.path}
+          end={item.path === "/dashboard/home"}
           title={
             collapsed && !mobile
               ? item.label
               : undefined
           }
-          className={`
+          onClick={() => {
+            /*
+             * Sur mobile, fermer le sidebar
+             * après navigation.
+             */
+            if (mobile) {
+              onToggle();
+            }
+          }}
+          className={({ isActive }) => `
             group
             flex!
             w-full!
@@ -141,7 +157,7 @@ const Sidebar = ({
             }
 
             ${
-              item.active
+              isActive
                 ? "bg-blue-100! text-gray-900!"
                 : "text-gray-600! hover:bg-gray-100! hover:text-gray-900!"
             }
@@ -150,45 +166,47 @@ const Sidebar = ({
             active:scale-[0.98]!
           `}
         >
-          <Icon
-            size={17}
-            strokeWidth={1.9}
-            className={`
-              shrink-0!
-              transition-all!
-              duration-150!
-              ease-out!
+          {({ isActive }) => (
+            <>
+              <Icon
+                size={17}
+                strokeWidth={1.9}
+                className={`
+                  shrink-0!
+                  transition-all!
+                  duration-150!
+                  ease-out!
 
-              ${
-                item.active
-                  ? "text-gray-900!"
-                  : "text-gray-500! group-hover:text-gray-900!"
-              }
+                  ${
+                    isActive
+                      ? "text-gray-900!"
+                      : "text-gray-500! group-hover:text-gray-900!"
+                  }
 
-              group-hover:scale-105!
-            `}
-          />
+                  group-hover:scale-105!
+                `}
+              />
 
-          {(!collapsed || mobile) && (
-            <span className="min-w-0! truncate! text-[13px]! font-semibold!">
-              {item.label}
-            </span>
+              {(!collapsed || mobile) && (
+                <span className="min-w-0! truncate! text-[13px]! font-semibold!">
+                  {item.label}
+                </span>
+              )}
+            </>
           )}
-        </button>
+        </NavLink>
       );
     });
   };
 
   /* =====================================================
-     SIDEBAR
+      MOBILE SIDEBAR
   ===================================================== */
 
   if (mobile) {
     return (
       <>
-        {/* =================================================
-            MOBILE BACKDROP
-        ================================================= */}
+        {/* BACKDROP */}
 
         <button
           type="button"
@@ -201,14 +219,10 @@ const Sidebar = ({
             cursor-default!
             bg-black/30!
             backdrop-blur-[2px]!
-            transition-opacity!
-            duration-300!
           "
         />
 
-        {/* =================================================
-            MOBILE SIDEBAR
-        ================================================= */}
+        {/* SIDEBAR */}
 
         <aside
           onClick={(event) => {
@@ -230,9 +244,7 @@ const Sidebar = ({
             shadow-[8px_0_30px_rgba(0,0,0,0.12)]!
           "
         >
-          {/* =============================================
-              HEADER
-          ============================================== */}
+          {/* HEADER */}
 
           <div
             className="
@@ -246,8 +258,6 @@ const Sidebar = ({
               px-4!
             "
           >
-            {/* Logo */}
-
             <div className="flex! items-center! gap-2.5!">
               <img
                 src="/favicon.png"
@@ -273,8 +283,6 @@ const Sidebar = ({
               </span>
             </div>
 
-            {/* Close */}
-
             <button
               type="button"
               onClick={(event) => {
@@ -289,14 +297,12 @@ const Sidebar = ({
                 flex!
                 h-8!
                 w-8!
-                cursor-pointer!
                 items-center!
                 justify-center!
                 rounded-lg!
                 text-gray-400!
                 transition-all!
                 duration-200!
-                ease-out!
                 hover:bg-gray-100!
                 hover:text-gray-800!
                 active:scale-90!
@@ -309,16 +315,13 @@ const Sidebar = ({
                   pointer-events-none!
                   transition-transform!
                   duration-200!
-                  ease-out!
                   group-hover:rotate-90!
                 "
               />
             </button>
           </div>
 
-          {/* =============================================
-              SEARCH
-          ============================================== */}
+          {/* SEARCH */}
 
           <div className="shrink-0! px-4! py-3!">
             <div className="relative!">
@@ -362,9 +365,7 @@ const Sidebar = ({
             </div>
           </div>
 
-          {/* =============================================
-              NAVIGATION
-          ============================================== */}
+          {/* NAVIGATION */}
 
           <div
             className="
@@ -378,8 +379,6 @@ const Sidebar = ({
               pb-5!
             "
           >
-            {/* PRIMARY */}
-
             <nav>
               <div className="mb-2! flex! items-center! justify-between! px-2!">
                 <span
@@ -404,8 +403,6 @@ const Sidebar = ({
               </div>
             </nav>
 
-            {/* CREATOR */}
-
             <nav className="mt-7!">
               <div className="mb-2! flex! items-center! justify-between! px-2!">
                 <span
@@ -429,8 +426,6 @@ const Sidebar = ({
                 {renderItems(creatorItems)}
               </div>
             </nav>
-
-            {/* PROFILE & SUPPORT */}
 
             <nav className="mt-7!">
               <div className="mb-2! flex! items-center! justify-between! px-2!">
@@ -462,8 +457,7 @@ const Sidebar = ({
   }
 
   /* =====================================================
-     DESKTOP SIDEBAR
-     TON DESIGN EST CONSERVÉ
+      DESKTOP SIDEBAR
   ===================================================== */
 
   return (
@@ -489,9 +483,7 @@ const Sidebar = ({
         }
       `}
     >
-      {/* =================================================
-          HEADER
-      ================================================= */}
+      {/* HEADER */}
 
       <div
         className={`
@@ -508,8 +500,6 @@ const Sidebar = ({
           }
         `}
       >
-        {/* Logo */}
-
         <div
           className={`
             flex!
@@ -535,22 +525,12 @@ const Sidebar = ({
                 "
               />
 
-              <span
-                className="
-                  font-heading!
-                  text-[15px]!
-                  font-semibold!
-                  tracking-tight!
-                  text-gray-900!
-                "
-              >
+              <span className="font-heading! text-[15px]! font-semibold! tracking-tight! text-gray-900!">
                 Orion
               </span>
             </>
           )}
         </div>
-
-        {/* Toggle */}
 
         <button
           type="button"
@@ -574,16 +554,20 @@ const Sidebar = ({
           "
         >
           {collapsed ? (
-            <PanelLeft size={17} />
+            <PanelLeft
+              size={17}
+              className="transition-transform! duration-200! group-hover:scale-105!"
+            />
           ) : (
-            <PanelLeftClose size={17} />
+            <PanelLeftClose
+              size={17}
+              className="transition-transform! duration-200! group-hover:scale-105!"
+            />
           )}
         </button>
       </div>
 
-      {/* =================================================
-          SEARCH
-      ================================================= */}
+      {/* SEARCH */}
 
       <div
         className={`
@@ -663,9 +647,7 @@ const Sidebar = ({
         )}
       </div>
 
-      {/* =================================================
-          NAVIGATION
-      ================================================= */}
+      {/* NAVIGATION */}
 
       <div
         className="

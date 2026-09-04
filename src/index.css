@@ -317,7 +317,7 @@ b {
 
   background-size: 400% 100%;
 
-  animation: skeleton-loading 1.4s ease-in-out infinite;
+  animation: skeleton-loading 2.4s ease-in-out infinite;
 
   border-radius: 0.5rem;
 }
@@ -348,3 +348,6 @@ b {
   cursor: not-allowed;
   background: #f9fafb;
 }
+
+
+
