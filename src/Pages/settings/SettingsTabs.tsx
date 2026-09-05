@@ -40,9 +40,9 @@ const SettingsTabs = ({
   onChange,
 }: SettingsTabsProps) => {
   return (
-    <div className="border-b border-gray-200">
+    <div className="w-full! overflow-x-auto! mb-3 border-b! border-gray-200!">
       <nav
-        className="flex! overflow-x-auto! px-2! scrollbar-none!"
+        className="flex! min-w-max! items-center! gap-5! sm:gap-6!"
         aria-label="Settings navigation"
       >
         {tabs.map((tab) => {
@@ -54,15 +54,32 @@ const SettingsTabs = ({
               key={tab.id}
               type="button"
               onClick={() => onChange(tab.id)}
-              className={`flex! shrink-0! items-center! gap-1.5! border-b-2! px-3! py-3! text-[11px]! font-medium transition sm:px-4! sm:text-xs! ${
-                active
-                  ? "border-blue-600! text-blue-600!"
-                  : "border-transparent! text-gray-500! hover:border-gray-300! hover:text-gray-800!"
-              }`}
+              className={`
+                relative!
+                inline-flex!
+                h-11!
+                shrink-0!
+                items-center!
+                gap-1.5!
+                border-b-2!
+                text-[11px]!
+                font-semibold!
+                transition-colors!
+                duration-150!
+                sm:text-xs!
+                ${
+                  active
+                    ? "border-blue-600! text-blue-600!"
+                    : "border-transparent! text-gray-500! hover:text-gray-900!"
+                }
+              `}
             >
-              <Icon size={14} />
+              <Icon
+                size={14}
+                strokeWidth={1.8}
+              />
 
-              <span>{tab.label}</span>
+              {tab.label}
             </button>
           );
         })}

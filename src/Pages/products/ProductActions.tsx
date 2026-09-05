@@ -25,44 +25,24 @@ const ProductActions = ({
   if (loading) {
     return (
       <section className="w-full! min-w-0! rounded-2xl! border! border-gray-200! bg-white! p-4! shadow-sm! sm:p-5!">
-        <div className="animate-pulse! space-y-3!">
+        <div className="animate-pulse! space-y-2.5!">
           <div className="skeleton h-10! w-full! rounded-xl!" />
-
           <div className="skeleton h-10! w-full! rounded-xl!" />
         </div>
       </section>
     );
   }
 
-  /* =========================================================
-     CONTENT
-  ========================================================= */
-
   return (
     <section className="w-full! min-w-0! rounded-2xl! border! border-gray-200! bg-white! p-4! shadow-sm! transition-all! duration-200! sm:p-5!">
       <div className="flex! flex-col! gap-2.5!">
-        {/* ===================================================
-            REVIEW
-        =================================================== */}
+        {/* REVIEW */}
 
         <Button
           type="button"
           disabled={isCreating}
           onClick={onReview}
-          className="
-            inline-flex!
-            h-10!
-            w-full!
-            items-center!
-            justify-center!
-            gap-2!
-            rounded-xl!
-            text-[11px]!
-            font-semibold!
-            transition-all!
-            duration-150!
-            active:scale-[0.99]!
-          "
+          className="inline-flex! h-10! w-full! items-center! justify-center! gap-2! rounded-xl! text-[11px]! font-semibold! transition-all! duration-150! active:scale-[0.99]!"
         >
           {isCreating ? (
             <Loader2
@@ -81,9 +61,7 @@ const ProductActions = ({
             : "Review product"}
         </Button>
 
-        {/* ===================================================
-            CANCEL
-        =================================================== */}
+        {/* CANCEL */}
 
         <Link
           to="/dashboard/products"

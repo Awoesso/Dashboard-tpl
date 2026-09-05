@@ -8,7 +8,7 @@ import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 
 import Dashboard from "./Pages/dashboard/Dashboard";
 import Settings from "./Pages/settings/Settings";
-
+import Marketplace from "./Pages/marketplace/Marketplace";
 import SignIn from "./Pages/auth/SignIn";
 import SignUp from "./Pages/auth/SignUp";
 import NotFound from "./Pages/NotFound";
@@ -70,6 +70,11 @@ export const router = createBrowserRouter([
         path: "settings",
         errorElement: <ErrorFallback />,
         element: <Settings />,
+      },
+       {
+        path: "Marketplace",
+        errorElement: <ErrorFallback />,
+        element: <Marketplace />,
       },
     ],
   },

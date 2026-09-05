@@ -1,6 +1,5 @@
 import {
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -8,7 +7,6 @@ import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createProductWithAssets } from "@/services/productsService";
-
 import ProductHeader from "@/Pages/products/ProductHeader";
 import ProductDetails from "@/Pages/products/ProductDetails";
 import ProductPricing from "@/Pages/products/ProductPricing";
@@ -17,12 +15,10 @@ import ProductShipping from "@/Pages/products/ProductShipping";
 import ProductOptions from "@/Pages/products/ProductOptions";
 import ProductImages from "@/Pages/products/ProductImages";
 import DigitalFileUpload from "@/Pages/products/DigitalFileUpload";
-import ProductPreview from "@/Pages/products/ProductPreview";
-import ProductPublication from "@/Pages/products/ProductPublication";
+import ProductSummary from "@/Pages/products/ProductSummary";
 import ProductActions from "@/Pages/products/ProductActions";
 import ProductReviewModal from "@/Pages/products/ProductReviewModal";
 import ProductNewSkeleton from "@/Pages/products/ProductNewSkeleton";
-
 /* =========================================================
    TYPES
 ========================================================= */
@@ -580,17 +576,6 @@ const ProductsNew = () => {
     });
   };
 
-  /* =======================================================
-     PREVIEW IMAGE
-  ======================================================= */
-
-  const previewImage = useMemo(() => {
-    if (images.length > 0) {
-      return images[0].preview;
-    }
-
-    return "/dashboard-preview.png";
-  }, [images]);
 
   /* =======================================================
      LOADING
@@ -715,19 +700,12 @@ const ProductsNew = () => {
   "
 >
   <div className="flex! h-full! min-h-0! flex-col! gap-4!">
-    
     <div className="min-h-0! flex-1! overflow-hidden!">
-      <ProductPreview
+      <ProductSummary
         form={form}
         images={images}
-        digitalFile={digitalFile}
-      />
-    </div>
-
-    <div className="shrink-0!">
-      <ProductPublication
         status={form.status}
-        onChange={(status) =>
+        onStatusChange={(status) =>
           updateForm("status", status)
         }
       />
@@ -739,7 +717,6 @@ const ProductsNew = () => {
         onReview={handleReview}
       />
     </div>
-
   </div>
 </aside>
 </div>

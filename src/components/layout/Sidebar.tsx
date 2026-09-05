@@ -51,11 +51,7 @@ const Sidebar = ({
   ];
 
   const creatorItems: SidebarItem[] = [
-    {
-      label: "My Products",
-      icon: Package,
-      path: "/dashboard/products",
-    },
+  
     {
       label: "Finance",
       icon: Wallet,
