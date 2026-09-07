@@ -1,61 +1,75 @@
-import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
 
-const MarketplaceHeader = () => {
+
+type MarketplaceHeaderProps = {
+  isLoading?: boolean;
+};
+
+const MarketplaceHeaderSkeleton = () => {
   return (
-    <header className="w-full! min-w-0!">
-      <div className="flex! min-w-0! flex-col! gap-4! sm:flex-row! sm:items-end! sm:justify-between!">
-        {/* =================================================
-            TITLE
-        ================================================= */}
-
-        <div className="min-w-0!">
-          <h1 className="font-heading! text-lg! font-semibold! tracking-tight! text-gray-900! sm:text-xl!">
-            Marketplace
-          </h1>
-
-          <p className="mt-1! max-w-xl! text-[10px]! leading-5! text-gray-500! sm:text-[11px]!">
-            Browse, manage and discover all products
-            available in your store.
-          </p>
-        </div>
-
-        {/* =================================================
-            ACTION
-        ================================================= */}
-
-        <Link
-          to="/dashboard/products/new"
-          className="
-            inline-flex!
-            h-10!
-            w-full!
-            shrink-0!
-            items-center!
-            justify-center!
-            gap-1.5!
-            rounded-lg!
-            bg-blue-600!
-            px-3.5!
-            text-[10px]!
-            font-semibold!
-            text-white!
-            transition-all!
-            duration-150!
-            hover:bg-blue-700!
-            active:scale-[0.99]!
-            sm:w-auto!
-            sm:text-[11px]!
-          "
-        >
-          <Plus
-            size={14}
-            strokeWidth={2}
-          />
-
-          Add product
-        </Link>
+    <div className="flex! min-w-0! items-center! justify-between! gap-3!">
+      <div className="min-w-0! flex-1!">
+        <div className="skeleton h-4! w-28! sm:h-5! sm:w-32!" />
+        <div className="skeleton mt-1.5! h-2.5! w-48! max-w-full!" />
       </div>
+
+      <div className="skeleton h-9! w-24! shrink-0! rounded-lg!" />
+    </div>
+  );
+};
+
+const MarketplaceHeader = ({
+  isLoading = false,
+}: MarketplaceHeaderProps) => {
+  if (isLoading) {
+    return <MarketplaceHeaderSkeleton />;
+  }
+
+  return (
+    <header
+      className="
+        flex!
+        min-w-0!
+        items-center!
+        justify-between!
+        gap-3!
+      "
+    >
+      <div className="min-w-0!">
+        <div className="flex! min-w-0! items-center! gap-2!">
+         
+
+          <div className="min-w-0!">
+            <h1
+              className="
+                truncate!
+                font-heading!
+                text-base!
+                font-semibold!
+                tracking-tight!
+                text-gray-900!
+                sm:text-lg!
+              "
+            >
+              Marketplace
+            </h1>
+
+            <p
+              className="
+                mt-0.5!
+                truncate!
+                text-[10px]!
+                font-medium!
+                text-gray-500!
+                sm:text-[11px]!
+              "
+            >
+              Manage and monitor your products.
+            </p>
+          </div>
+        </div>
+      </div>
+
+     
     </header>
   );
 };

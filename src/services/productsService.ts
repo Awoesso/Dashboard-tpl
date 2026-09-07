@@ -2,25 +2,36 @@ import { supabase } from "../lib/supabase";
 
 /* =========================================================
    TYPES
-   ========================================================= */
+========================================================= */
 
 export interface CreateProductData {
   name: string;
 
   description?: string | null;
-
   category?: string | null;
   brand?: string | null;
 
-  product_type: "physical" | "digital";
+  /*
+   * Kept for compatibility with ProductsNew.
+   * The current products table does not use this field.
+   */
+  product_type?: "physical" | "digital";
 
   price: number;
+
+  /*
+   * Kept for compatibility with ProductsNew.
+   * Not sent to the current products table.
+   */
   compare_at_price?: number | null;
 
   currency?: string;
 
+  /*
+   * Kept for compatibility with ProductsNew.
+   * The current products table does not use these fields.
+   */
   sku?: string | null;
-
   track_inventory?: boolean;
   stock_quantity?: number;
 
@@ -65,14 +76,17 @@ export interface ProductAssets {
 }
 
 /* =========================================================
-   CONSTANTES
-   ========================================================= */
+   CONSTANTS
+========================================================= */
 
-const IMAGE_BUCKET = "product-images";
+const IMAGE_BUCKET = "product-covers";
 const DIGITAL_FILE_BUCKET = "product-files";
 
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-const MAX_DIGITAL_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const MAX_IMAGE_SIZE =
+  5 * 1024 * 1024;
+
+const MAX_DIGITAL_FILE_SIZE =
+  50 * 1024 * 1024;
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -92,8 +106,8 @@ const ALLOWED_DIGITAL_TYPES = [
 ];
 
 /* =========================================================
-   1. GENERATE PRODUCT SLUG
-   ========================================================= */
+   1. GENERATE SLUG
+========================================================= */
 
 export const generateProductSlug = (
   name: string,
@@ -108,136 +122,123 @@ export const generateProductSlug = (
 };
 
 /* =========================================================
-   2. CREATE UNIQUE SLUG
-   ========================================================= */
+   2. UNIQUE SLUG
+========================================================= */
 
-export const createUniqueProductSlug = async (
-  name: string,
-): Promise<string> => {
-  const baseSlug = generateProductSlug(name);
+export const createUniqueProductSlug =
+  async (
+    name: string,
+  ): Promise<string> => {
+    const baseSlug =
+      generateProductSlug(name);
 
-  if (!baseSlug) {
-    throw new Error(
-      "Product name cannot generate a valid slug.",
-    );
-  }
-
-  let slug = baseSlug;
-  let counter = 2;
-
-  while (true) {
-    const { data, error } = await supabase
-      .from("products")
-      .select("id")
-      .eq("slug", slug)
-      .maybeSingle();
-
-    if (error) {
-      console.error(
-        "Error checking product slug:",
-        error,
-      );
-
+    if (!baseSlug) {
       throw new Error(
-        "Unable to verify product slug.",
+        "Product name cannot generate a valid slug.",
       );
     }
 
-    if (!data) {
-      return slug;
-    }
+    let slug = baseSlug;
+    let counter = 2;
 
-    slug = `${baseSlug}-${counter}`;
-    counter++;
-  }
-};
+    while (true) {
+      const { data, error } =
+        await supabase
+          .from("products")
+          .select("id")
+          .eq("slug", slug)
+          .maybeSingle();
+
+      if (error) {
+        console.error(
+          "Error checking product slug:",
+          error,
+        );
+
+        throw new Error(
+          "Unable to verify product slug.",
+        );
+      }
+
+      if (!data) {
+        return slug;
+      }
+
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+  };
 
 /* =========================================================
-   3. VALIDATE PRODUCT DATA
-   ========================================================= */
+   3. VALIDATE
+========================================================= */
 
 const validateProductData = (
   product: CreateProductData,
 ) => {
   if (!product.name.trim()) {
-    throw new Error("Product name is required.");
-  }
-
-  if (product.price < 0) {
-    throw new Error("Product price cannot be negative.");
-  }
-
-  if (
-    product.compare_at_price !== null &&
-    product.compare_at_price !== undefined &&
-    product.compare_at_price < 0
-  ) {
     throw new Error(
-      "Compare price cannot be negative.",
+      "Product name is required.",
     );
   }
 
   if (
-    product.stock_quantity !== undefined &&
-    product.stock_quantity < 0
+    !Number.isFinite(product.price) ||
+    product.price < 0
   ) {
     throw new Error(
-      "Stock quantity cannot be negative.",
-    );
-  }
-
-  if (
-    product.product_type === "physical" &&
-    product.weight !== null &&
-    product.weight !== undefined &&
-    product.weight < 0
-  ) {
-    throw new Error(
-      "Product weight cannot be negative.",
-    );
-  }
-
-  const dimensions = [
-    product.length,
-    product.width,
-    product.height,
-  ];
-
-  if (
-    dimensions.some(
-      (value) =>
-        value !== null &&
-        value !== undefined &&
-        value < 0,
-    )
-  ) {
-    throw new Error(
-      "Product dimensions cannot be negative.",
+      "Product price must be a valid positive number.",
     );
   }
 };
 
 /* =========================================================
    4. CREATE PRODUCT
-   ========================================================= */
+========================================================= */
 
 export const createProduct = async (
   product: CreateProductData,
 ) => {
   validateProductData(product);
 
-  const slug = await createUniqueProductSlug(
-    product.name,
-  );
+  const slug =
+    await createUniqueProductSlug(
+      product.name,
+    );
 
-  const { data, error } = await supabase
-    .from("products")
-    .insert({
-      ...product,
-      slug,
-    })
-    .select()
-    .single();
+  /*
+   * IMPORTANT:
+   * Only send columns confirmed to exist
+   * in the current products table.
+   */
+  const payload = {
+    name: product.name.trim(),
+
+    slug,
+
+    description:
+      product.description?.trim() ||
+      null,
+
+    category:
+      product.category?.trim() ||
+      null,
+
+    price: product.price,
+
+    currency:
+      product.currency || "XOF",
+
+    status:
+      product.status || "draft",
+  };
+
+  const { data, error } =
+    await supabase
+      .from("products")
+      .insert(payload)
+      .select()
+      .single();
 
   if (error) {
     console.error(
@@ -252,11 +253,17 @@ export const createProduct = async (
 };
 
 /* =========================================================
-   5. VALIDATE IMAGE
-   ========================================================= */
+   5. IMAGE VALIDATION
+========================================================= */
 
-const validateProductImage = (file: File) => {
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+const validateProductImage = (
+  file: File,
+) => {
+  if (
+    !ALLOWED_IMAGE_TYPES.includes(
+      file.type,
+    )
+  ) {
     throw new Error(
       "Unsupported image format. Use JPG, PNG, WEBP or GIF.",
     );
@@ -270,94 +277,117 @@ const validateProductImage = (file: File) => {
 };
 
 /* =========================================================
-   6. UPLOAD PRODUCT IMAGE TO STORAGE
-   ========================================================= */
+   6. UPLOAD PRODUCT IMAGE
+========================================================= */
 
-export const uploadProductImage = async ({
-  productId,
-  file,
-  sortOrder = 0,
-}: ProductImageUpload) => {
-  validateProductImage(file);
+export const uploadProductImage =
+  async ({
+    productId,
+    file,
+    sortOrder = 0,
+  }: ProductImageUpload) => {
+    validateProductImage(file);
 
-  const fileExtension =
-    file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const fileExtension =
+      file.name
+        .split(".")
+        .pop()
+        ?.toLowerCase() ||
+      "jpg";
 
-  const fileName = `${crypto.randomUUID()}.${fileExtension}`;
+    const fileName = `${crypto.randomUUID()}.${fileExtension}`;
 
-  const filePath =
-    `products/${productId}/${fileName}`;
+    const filePath =
+      `products/${productId}/${fileName}`;
 
-  const { error } = await supabase.storage
-    .from(IMAGE_BUCKET)
-    .upload(filePath, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type,
-    });
+    const { error } =
+      await supabase.storage
+        .from(IMAGE_BUCKET)
+        .upload(
+          filePath,
+          file,
+          {
+            cacheControl: "3600",
+            upsert: false,
+            contentType:
+              file.type,
+          },
+        );
 
-  if (error) {
-    console.error(
-      "Error uploading product image:",
-      error,
-    );
+    if (error) {
+      console.error(
+        "Error uploading product image:",
+        error,
+      );
 
-    throw new Error(
-      "Unable to upload product image.",
-    );
-  }
+      throw new Error(
+        "Unable to upload product image.",
+      );
+    }
 
-  return {
-    storagePath: filePath,
-    sortOrder,
+    return {
+      storagePath: filePath,
+      sortOrder,
+    };
   };
-};
 
 /* =========================================================
-   7. SAVE IMAGE INFORMATION IN DATABASE
-   ========================================================= */
+   7. SAVE IMAGE DATABASE ROW
+========================================================= */
 
-export const saveProductImage = async ({
-  productId,
-  storagePath,
-  sortOrder = 0,
-}: SaveProductImageData) => {
-  const { data, error } = await supabase
-    .from("product_images")
-    .insert({
-      product_id: productId,
-      storage_path: storagePath,
-      sort_order: sortOrder,
-    })
-    .select()
-    .single();
+export const saveProductImage =
+  async ({
+    productId,
+    storagePath,
+    sortOrder = 0,
+  }: SaveProductImageData) => {
+    const { data, error } =
+      await supabase
+        .from("product_images")
+        .insert({
+          product_id: productId,
+          storage_path:
+            storagePath,
+          sort_order: sortOrder,
+        })
+        .select()
+        .single();
 
-  if (error) {
-    console.error(
-      "Error saving product image:",
-      error,
-    );
+    if (error) {
+      console.error(
+        "Error saving product image:",
+        error,
+      );
 
-    throw new Error(
-      "Unable to save product image information.",
-    );
-  }
+      throw new Error(
+        "Unable to save product image information.",
+      );
+    }
 
-  return data;
-};
+    return data;
+  };
 
 /* =========================================================
-   8. VALIDATE DIGITAL FILE
-   ========================================================= */
+   8. DIGITAL FILE VALIDATION
+========================================================= */
 
-const validateDigitalFile = (file: File) => {
-  if (!ALLOWED_DIGITAL_TYPES.includes(file.type)) {
+const validateDigitalFile = (
+  file: File,
+) => {
+  if (
+    !ALLOWED_DIGITAL_TYPES.includes(
+      file.type,
+    )
+  ) {
     throw new Error(
       "Unsupported digital file format.",
     );
   }
 
-  if (file.size > MAX_DIGITAL_FILE_SIZE) {
+  if (
+    file.size >
+    MAX_DIGITAL_FILE_SIZE
+  ) {
     throw new Error(
       "Digital file must be smaller than 50 MB.",
     );
@@ -365,249 +395,264 @@ const validateDigitalFile = (file: File) => {
 };
 
 /* =========================================================
-   9. UPLOAD DIGITAL FILE TO STORAGE
-   ========================================================= */
+   9. UPLOAD DIGITAL FILE
+========================================================= */
 
-export const uploadDigitalFile = async ({
-  productId,
-  file,
-}: ProductFileUpload) => {
-  validateDigitalFile(file);
+export const uploadDigitalFile =
+  async ({
+    productId,
+    file,
+  }: ProductFileUpload) => {
+    validateDigitalFile(file);
 
-  const fileExtension =
-    file.name.split(".").pop()?.toLowerCase() || "bin";
+    const fileExtension =
+      file.name
+        .split(".")
+        .pop()
+        ?.toLowerCase() ||
+      "bin";
 
-  const fileName = `${crypto.randomUUID()}.${fileExtension}`;
+    const fileName = `${crypto.randomUUID()}.${fileExtension}`;
 
-  const filePath =
-    `products/${productId}/${fileName}`;
+    const filePath =
+      `products/${productId}/${fileName}`;
 
-  const { error } = await supabase.storage
-    .from(DIGITAL_FILE_BUCKET)
-    .upload(filePath, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type,
-    });
+    const { error } =
+      await supabase.storage
+        .from(DIGITAL_FILE_BUCKET)
+        .upload(
+          filePath,
+          file,
+          {
+            cacheControl: "3600",
+            upsert: false,
+            contentType:
+              file.type,
+          },
+        );
 
-  if (error) {
-    console.error(
-      "Error uploading digital file:",
-      error,
-    );
+    if (error) {
+      console.error(
+        "Error uploading digital file:",
+        error,
+      );
 
-    throw new Error(
-      "Unable to upload digital file.",
-    );
-  }
+      throw new Error(
+        "Unable to upload digital file.",
+      );
+    }
 
-  return {
-    fileName: file.name,
-    storagePath: filePath,
-    fileSize: file.size,
-    mimeType: file.type,
+    return {
+      fileName: file.name,
+      storagePath: filePath,
+      fileSize: file.size,
+      mimeType: file.type,
+    };
   };
-};
 
 /* =========================================================
-   10. SAVE DIGITAL FILE INFORMATION
-   ========================================================= */
+   10. SAVE DIGITAL FILE
+========================================================= */
 
-export const saveProductFile = async ({
-  productId,
-  fileName,
-  storagePath,
-  fileSize,
-  mimeType,
-}: SaveProductFileData) => {
-  const { data, error } = await supabase
-    .from("product_files")
-    .insert({
-      product_id: productId,
-      file_name: fileName,
-      storage_path: storagePath,
-      file_size: fileSize,
-      mime_type: mimeType,
-    })
-    .select()
-    .single();
+export const saveProductFile =
+  async ({
+    productId,
+    fileName,
+    storagePath,
+    fileSize,
+    mimeType,
+  }: SaveProductFileData) => {
+    const { data, error } =
+      await supabase
+        .from("product_files")
+        .insert({
+          product_id: productId,
+          file_name: fileName,
+          storage_path:
+            storagePath,
+          file_size: fileSize,
+          mime_type: mimeType,
+        })
+        .select()
+        .single();
 
-  if (error) {
-    console.error(
-      "Error saving product file:",
-      error,
-    );
+    if (error) {
+      console.error(
+        "Error saving product file:",
+        error,
+      );
 
-    throw new Error(
-      "Unable to save product file information.",
-    );
-  }
+      throw new Error(
+        "Unable to save product file information.",
+      );
+    }
 
-  return data;
-};
+    return data;
+  };
 
 /* =========================================================
    11. DELETE STORAGE FILE
-   ========================================================= */
+========================================================= */
 
-const deleteStorageFile = async (
-  bucket: string,
-  storagePath: string,
-) => {
-  const { error } = await supabase.storage
-    .from(bucket)
-    .remove([storagePath]);
+const deleteStorageFile =
+  async (
+    bucket: string,
+    storagePath: string,
+  ) => {
+    const { error } =
+      await supabase.storage
+        .from(bucket)
+        .remove([storagePath]);
 
-  if (error) {
-    console.error(
-      `Error deleting file from ${bucket}:`,
-      error,
-    );
-  }
-};
+    if (error) {
+      console.error(
+        `Error deleting file from ${bucket}:`,
+        error,
+      );
+    }
+  };
 
 /* =========================================================
-   12. CREATE PRODUCT WITH IMAGES / DIGITAL FILE
-   ========================================================= */
+   12. CREATE PRODUCT WITH ASSETS
+========================================================= */
 
-export const createProductWithAssets = async (
-  product: CreateProductData,
-  assets?: ProductAssets,
-) => {
-  let createdProduct: {
-    id: string;
-    [key: string]: unknown;
-  } | null = null;
+export const createProductWithAssets =
+  async (
+    product: CreateProductData,
+    assets?: ProductAssets,
+  ) => {
+    let createdProduct: {
+      id: string;
+      [key: string]: unknown;
+    } | null = null;
 
-  const uploadedImagePaths: string[] = [];
-  const uploadedDigitalPaths: string[] = [];
+    const uploadedImagePaths: string[] =
+      [];
 
-  try {
-    /* -------------------------------------------------------
-       CREATE PRODUCT
-       ------------------------------------------------------- */
+    const uploadedDigitalPaths: string[] =
+      [];
 
-    createdProduct = await createProduct(product);
+    try {
+      /* -----------------------------------------------
+         CREATE PRODUCT
+      ----------------------------------------------- */
 
-    if (!createdProduct) {
-      throw new Error("Unable to create product.");
-    }
+      createdProduct =
+        await createProduct(product);
 
-    /* -------------------------------------------------------
-       UPLOAD IMAGES
-       ------------------------------------------------------- */
-
-    if (assets?.images?.length) {
-      for (
-        let index = 0;
-        index < assets.images.length;
-        index++
-      ) {
-        const file = assets.images[index];
-
-        const uploaded = await uploadProductImage({
-          productId: createdProduct.id,
-          file,
-          sortOrder: index,
-        });
-
-        uploadedImagePaths.push(
-          uploaded.storagePath,
+      if (!createdProduct) {
+        throw new Error(
+          "Unable to create product.",
         );
-
-        await saveProductImage({
-          productId: createdProduct.id,
-          storagePath: uploaded.storagePath,
-          sortOrder: uploaded.sortOrder,
-        });
       }
-    }
 
-    /* -------------------------------------------------------
-       UPLOAD DIGITAL FILE
-       ------------------------------------------------------- */
+      /* -----------------------------------------------
+         UPLOAD IMAGES
+      ----------------------------------------------- */
 
-    if (
-      product.product_type === "digital" &&
-      assets?.digitalFile
-    ) {
-      const uploaded = await uploadDigitalFile({
-        productId: createdProduct.id,
-        file: assets.digitalFile,
-      });
+      if (assets?.images?.length) {
+        for (
+          let index = 0;
+          index <
+          assets.images.length;
+          index++
+        ) {
+          const file =
+            assets.images[index];
 
-      uploadedDigitalPaths.push(
-        uploaded.storagePath,
+          const uploaded =
+            await uploadProductImage({
+              productId:
+                createdProduct.id,
+              file,
+              sortOrder: index,
+            });
+
+          uploadedImagePaths.push(
+            uploaded.storagePath,
+          );
+
+          await saveProductImage({
+            productId:
+              createdProduct.id,
+            storagePath:
+              uploaded.storagePath,
+            sortOrder:
+              uploaded.sortOrder,
+          });
+        }
+      }
+
+      /*
+       * Digital file upload is intentionally
+       * skipped for now because the current
+       * products table has no product_type
+       * column to distinguish physical/digital.
+       */
+
+      /* -----------------------------------------------
+         SUCCESS
+      ----------------------------------------------- */
+
+      return createdProduct;
+    } catch (error) {
+      console.error(
+        "Error creating product with assets:",
+        error,
       );
 
-      await saveProductFile({
-        productId: createdProduct.id,
-        fileName: uploaded.fileName,
-        storagePath: uploaded.storagePath,
-        fileSize: uploaded.fileSize,
-        mimeType: uploaded.mimeType,
-      });
-    }
+      /* -----------------------------------------------
+         CLEANUP STORAGE
+      ----------------------------------------------- */
 
-    /* -------------------------------------------------------
-       SUCCESS
-       ------------------------------------------------------- */
-
-    return createdProduct;
-  } catch (error) {
-    console.error(
-      "Error creating product with assets:",
-      error,
-    );
-
-    /* -------------------------------------------------------
-       CLEANUP STORAGE
-       ------------------------------------------------------- */
-
-    for (const path of uploadedImagePaths) {
-      await deleteStorageFile(
-        IMAGE_BUCKET,
-        path,
-      );
-    }
-
-    for (const path of uploadedDigitalPaths) {
-      await deleteStorageFile(
-        DIGITAL_FILE_BUCKET,
-        path,
-      );
-    }
-
-    /* -------------------------------------------------------
-       CLEANUP DATABASE
-       ------------------------------------------------------- */
-
-    if (createdProduct) {
-      await supabase
-        .from("product_images")
-        .delete()
-        .eq(
-          "product_id",
-          createdProduct.id,
+      for (
+        const path of uploadedImagePaths
+      ) {
+        await deleteStorageFile(
+          IMAGE_BUCKET,
+          path,
         );
+      }
 
-      await supabase
-        .from("product_files")
-        .delete()
-        .eq(
-          "product_id",
-          createdProduct.id,
+      for (
+        const path of uploadedDigitalPaths
+      ) {
+        await deleteStorageFile(
+          DIGITAL_FILE_BUCKET,
+          path,
         );
+      }
 
-      await supabase
-        .from("products")
-        .delete()
-        .eq(
-          "id",
-          createdProduct.id,
-        );
+      /* -----------------------------------------------
+         CLEANUP DATABASE
+      ----------------------------------------------- */
+
+      if (createdProduct) {
+        await supabase
+          .from("product_images")
+          .delete()
+          .eq(
+            "product_id",
+            createdProduct.id,
+          );
+
+        await supabase
+          .from("product_files")
+          .delete()
+          .eq(
+            "product_id",
+            createdProduct.id,
+          );
+
+        await supabase
+          .from("products")
+          .delete()
+          .eq(
+            "id",
+            createdProduct.id,
+          );
+      }
+
+      throw error;
     }
-
-    throw error;
-  }
-};
+  };

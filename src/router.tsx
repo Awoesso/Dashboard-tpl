@@ -5,6 +5,8 @@ import {
 import ProductsNew from "./Pages/products/ProductsNew";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
+import MarketplaceProductDetails from "@/Pages/marketplace/MarketplaceProductDetails";
+
 
 import Dashboard from "./Pages/dashboard/Dashboard";
 import Settings from "./Pages/settings/Settings";
@@ -76,6 +78,12 @@ export const router = createBrowserRouter([
         errorElement: <ErrorFallback />,
         element: <Marketplace />,
       },
+       {
+        path: "/dashboard/marketplace/:productId",
+        errorElement: <ErrorFallback />,
+        element: <MarketplaceProductDetails />,
+      },
+      
     ],
   },
 

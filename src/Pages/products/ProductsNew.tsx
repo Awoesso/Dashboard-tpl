@@ -2,11 +2,15 @@ import {
   useEffect,
   useRef,
   useState,
+  type FormEvent,
 } from "react";
-import type { FormEvent } from "react";
+import { AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { createProductWithAssets } from "@/services/productsService";
+import {
+  createProductWithAssets,
+} from "@/services/productsService";
+
 import ProductHeader from "@/Pages/products/ProductHeader";
 import ProductDetails from "@/Pages/products/ProductDetails";
 import ProductPricing from "@/Pages/products/ProductPricing";
@@ -15,17 +19,22 @@ import ProductShipping from "@/Pages/products/ProductShipping";
 import ProductOptions from "@/Pages/products/ProductOptions";
 import ProductImages from "@/Pages/products/ProductImages";
 import DigitalFileUpload from "@/Pages/products/DigitalFileUpload";
-import ProductSummary from "@/Pages/products/ProductSummary";
+import ProductPreview from "@/Pages/products/ProductPreview";
+import ProductPublication from "@/Pages/products/ProductPublication";
 import ProductActions from "@/Pages/products/ProductActions";
 import ProductReviewModal from "@/Pages/products/ProductReviewModal";
-import ProductNewSkeleton from "@/Pages/products/ProductNewSkeleton";
+
 /* =========================================================
    TYPES
 ========================================================= */
 
-export type ProductType = "physical" | "digital";
+export type ProductType =
+  | "physical"
+  | "digital";
 
-export type ProductStatus = "draft" | "published";
+export type ProductStatus =
+  | "published"
+  | "draft";
 
 export interface ProductImage {
   id: string;
@@ -46,6 +55,7 @@ export interface ProductFormData {
   comparePrice: string;
 
   sku: string;
+
   trackInventory: boolean;
   stock: string;
 
@@ -76,6 +86,33 @@ export const categories = [
 ];
 
 const MAX_DESCRIPTION_LENGTH = 1000;
+
+const INITIAL_FORM: ProductFormData = {
+  productType: "physical",
+  status: "published",
+
+  productName: "",
+  brand: "",
+  category: "Electronics",
+  description: "",
+
+  price: "",
+  comparePrice: "",
+
+  sku: "",
+
+  trackInventory: true,
+  stock: "0",
+
+  weight: "",
+  length: "",
+  width: "",
+  height: "",
+
+  hasOptions: false,
+  optionName: "Color",
+  optionValues: [""],
+};
 
 /* =========================================================
    COMPONENT
@@ -132,32 +169,9 @@ const ProductsNew = () => {
   ======================================================= */
 
   const [form, setForm] =
-    useState<ProductFormData>({
-      productType: "physical",
-      status: "draft",
-
-      productName: "",
-      brand: "",
-      category: "Electronics",
-      description: "",
-
-      price: "",
-      comparePrice: "",
-
-      sku: "",
-
-      trackInventory: true,
-      stock: "0",
-
-      weight: "",
-      length: "",
-      width: "",
-      height: "",
-
-      hasOptions: false,
-      optionName: "Color",
-      optionValues: [""],
-    });
+    useState<ProductFormData>(
+      INITIAL_FORM,
+    );
 
   /* =======================================================
      INITIAL LOADING
@@ -174,7 +188,7 @@ const ProductsNew = () => {
   }, []);
 
   /* =======================================================
-     KEEP IMAGES REF UPDATED
+     KEEP IMAGE REF UPDATED
   ======================================================= */
 
   useEffect(() => {
@@ -182,14 +196,18 @@ const ProductsNew = () => {
   }, [images]);
 
   /* =======================================================
-     CLEANUP OBJECT URLS
+     CLEANUP PREVIEW URLS
   ======================================================= */
 
   useEffect(() => {
     return () => {
-      imagesRef.current.forEach((image) => {
-        URL.revokeObjectURL(image.preview);
-      });
+      imagesRef.current.forEach(
+        (image) => {
+          URL.revokeObjectURL(
+            image.preview,
+          );
+        },
+      );
     };
   }, []);
 
@@ -197,7 +215,9 @@ const ProductsNew = () => {
      UPDATE FORM
   ======================================================= */
 
-  const updateForm = <K extends keyof ProductFormData>(
+  const updateForm = <
+    K extends keyof ProductFormData
+  >(
     key: K,
     value: ProductFormData[K],
   ) => {
@@ -211,7 +231,9 @@ const ProductsNew = () => {
         return current;
       }
 
-      const next = { ...current };
+      const next = {
+        ...current,
+      };
 
       delete next[key];
 
@@ -224,7 +246,10 @@ const ProductsNew = () => {
   ======================================================= */
 
   const validateForm = () => {
-    const nextErrors: Record<string, string> = {};
+    const nextErrors: Record<
+      string,
+      string
+    > = {};
 
     /* ---------------- Product name ---------------- */
 
@@ -236,15 +261,50 @@ const ProductsNew = () => {
     /* ---------------- Price ---------------- */
 
     if (!form.price.trim()) {
-      nextErrors.price = "Price is required.";
+      nextErrors.price =
+        "Price is required.";
     } else {
       const price = Number(
         form.price.replace(/\s/g, ""),
       );
 
-      if (Number.isNaN(price) || price < 0) {
+      if (
+        !Number.isFinite(price) ||
+        price < 0
+      ) {
         nextErrors.price =
           "Enter a valid price.";
+      }
+    }
+
+    /* ---------------- Compare price ---------------- */
+
+    if (form.comparePrice.trim()) {
+      const price = Number(
+        form.price.replace(/\s/g, ""),
+      );
+
+      const comparePrice = Number(
+        form.comparePrice.replace(
+          /\s/g,
+          "",
+        ),
+      );
+
+      if (
+        !Number.isFinite(
+          comparePrice,
+        ) ||
+        comparePrice < 0
+      ) {
+        nextErrors.comparePrice =
+          "Enter a valid compare price.";
+      } else if (
+        Number.isFinite(price) &&
+        comparePrice < price
+      ) {
+        nextErrors.comparePrice =
+          "Compare price must be higher than the selling price.";
       }
     }
 
@@ -258,40 +318,47 @@ const ProductsNew = () => {
         "Description is too long.";
     }
 
-    /* ---------------- Stock ---------------- */
+    /* ---------------- Inventory ---------------- */
 
     if (
       form.productType === "physical" &&
       form.trackInventory
     ) {
-      const stock = Number(form.stock);
-
-      if (
-        form.stock === "" ||
-        Number.isNaN(stock) ||
-        stock < 0
-      ) {
+      if (form.stock === "") {
         nextErrors.stock =
-          "Enter a valid stock quantity.";
+          "Stock is required.";
+      } else {
+        const stock = Number(
+          form.stock,
+        );
+
+        if (
+          !Number.isFinite(stock) ||
+          stock < 0
+        ) {
+          nextErrors.stock =
+            "Enter a valid stock quantity.";
+        }
       }
     }
 
     /* ---------------- Options ---------------- */
 
     if (form.hasOptions) {
+      const validOptions =
+        form.optionValues.filter(
+          (value) =>
+            value.trim() !== "",
+        );
+
       if (!form.optionName.trim()) {
         nextErrors.optionName =
           "Option name is required.";
       }
 
-      const validValues =
-        form.optionValues.filter(
-          (value) => value.trim() !== "",
-        );
-
-      if (!validValues.length) {
+      if (!validOptions.length) {
         nextErrors.optionValues =
-          "Add at least one option value.";
+          "Add at least one value.";
       }
     }
 
@@ -307,7 +374,11 @@ const ProductsNew = () => {
 
     setErrors(nextErrors);
 
-    return Object.keys(nextErrors).length === 0;
+    return (
+      Object.keys(
+        nextErrors,
+      ).length === 0
+    );
   };
 
   /* =======================================================
@@ -315,11 +386,30 @@ const ProductsNew = () => {
   ======================================================= */
 
   const handleReview = () => {
-    if (!validateForm()) {
+    const isValid =
+      validateForm();
+
+    if (!isValid) {
       return;
     }
 
     setShowReview(true);
+  };
+
+  /* =======================================================
+     FORM SUBMIT
+  ======================================================= */
+
+  const handleSubmit = (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    if (isCreating) {
+      return;
+    }
+
+    handleReview();
   };
 
   /* =======================================================
@@ -331,10 +421,24 @@ const ProductsNew = () => {
       return;
     }
 
+    /* -----------------------------------------------
+       Revalidate before creation
+    ----------------------------------------------- */
+
+    const isValid =
+      validateForm();
+
+    if (!isValid) {
+      setShowReview(false);
+      return;
+    }
+
     setIsCreating(true);
 
     setErrors((current) => {
-      const next = { ...current };
+      const next = {
+        ...current,
+      };
 
       delete next.submit;
 
@@ -342,126 +446,54 @@ const ProductsNew = () => {
     });
 
     try {
-      /* =====================================================
+      /* ---------------------------------------------
          PRICE
-      ===================================================== */
+      --------------------------------------------- */
 
       const price = Number(
-        form.price.replace(/\s/g, ""),
+        form.price.replace(
+          /\s/g,
+          "",
+        ),
       );
 
-      /* =====================================================
-         COMPARE PRICE
-      ===================================================== */
-
-      const compareAtPrice =
-        form.comparePrice.trim() !== ""
-          ? Number(
-              form.comparePrice.replace(
-                /\s/g,
-                "",
-              ),
-            )
-          : null;
-
-      /* =====================================================
-         STOCK
-      ===================================================== */
-
-      const stockQuantity =
-        form.productType === "physical"
-          ? Number(form.stock || 0)
-          : 0;
-
-      /* =====================================================
-         OPTIONS
-      ===================================================== */
-
-      const options =
-        form.hasOptions
-          ? {
-              [form.optionName.trim()]:
-                form.optionValues
-                  .map((value) =>
-                    value.trim(),
-                  )
-                  .filter(Boolean),
-            }
-          : null;
-
-      /* =====================================================
-         PRODUCT DATA
-      ===================================================== */
+      /* ---------------------------------------------
+         ONLY SEND DB-SUPPORTED PRODUCT FIELDS
+         
+         Current products table supports:
+         name
+         slug
+         description
+         category
+         price
+         currency
+         status
+         sales_count
+         view_count
+         created_at
+      --------------------------------------------- */
 
       const productData = {
         name: form.productName.trim(),
 
         description:
-          form.description.trim() || null,
+          form.description.trim() ||
+          null,
 
         category:
-          form.category.trim() || null,
-
-        brand:
-          form.brand.trim() || null,
-
-        product_type:
-          form.productType,
+          form.category.trim() ||
+          null,
 
         price,
 
-        compare_at_price:
-          compareAtPrice,
-
         currency: "XOF",
-
-        sku:
-          form.sku.trim() || null,
-
-        track_inventory:
-          form.productType === "physical"
-            ? form.trackInventory
-            : false,
-
-        stock_quantity:
-          stockQuantity,
-
-        weight:
-          form.productType ===
-            "physical" &&
-          form.weight.trim()
-            ? Number(form.weight)
-            : null,
-
-        length:
-          form.productType ===
-            "physical" &&
-          form.length.trim()
-            ? Number(form.length)
-            : null,
-
-        width:
-          form.productType ===
-            "physical" &&
-          form.width.trim()
-            ? Number(form.width)
-            : null,
-
-        height:
-          form.productType ===
-            "physical" &&
-          form.height.trim()
-            ? Number(form.height)
-            : null,
-
-        options,
 
         status: form.status,
       };
 
-      /* =====================================================
-         SEND TO SERVICE
-      ===================================================== */
+      /* ---------------------------------------------
+         CREATE PRODUCT + ASSETS
+      --------------------------------------------- */
 
       const createdProduct =
         await createProductWithAssets(
@@ -484,17 +516,15 @@ const ProductsNew = () => {
         createdProduct,
       );
 
-      /* =====================================================
-         CLOSE MODAL
-      ===================================================== */
+      /* ---------------------------------------------
+         SUCCESS
+      --------------------------------------------- */
 
       setShowReview(false);
 
-      /* =====================================================
-         REDIRECT
-      ===================================================== */
-
-      navigate("/dashboard/products");
+      navigate(
+        "/dashboard/products",
+      );
     } catch (error) {
       console.error(
         "Create product failed:",
@@ -510,26 +540,10 @@ const ProductsNew = () => {
         submit: message,
       });
 
-      /*
-       * On ferme la modal pour que l'erreur
-       * soit visible sur la page principale.
-       */
       setShowReview(false);
     } finally {
       setIsCreating(false);
     }
-  };
-
-  /* =======================================================
-     FORM SUBMIT
-  ======================================================= */
-
-  const handleSubmit = (
-    event: FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault();
-
-    handleReview();
   };
 
   /* =======================================================
@@ -546,7 +560,9 @@ const ProductsNew = () => {
         return current;
       }
 
-      const next = { ...current };
+      const next = {
+        ...current,
+      };
 
       delete next.images;
 
@@ -568,7 +584,9 @@ const ProductsNew = () => {
         return current;
       }
 
-      const next = { ...current };
+      const next = {
+        ...current,
+      };
 
       delete next.digitalFile;
 
@@ -576,13 +594,14 @@ const ProductsNew = () => {
     });
   };
 
-
   /* =======================================================
-     LOADING
+     PAGE SKELETON
   ======================================================= */
 
   if (isLoading) {
-    return <ProductNewSkeleton />;
+    return (
+      <ProductsNewSkeleton />
+    );
   }
 
   /* =======================================================
@@ -591,10 +610,22 @@ const ProductsNew = () => {
 
   return (
     <>
-      <div className="min-h-screen! w-full! bg-[#fafafa]! px-3! py-3! sm:px-4! sm:py-5! lg:px-6! lg:py-6!">
+      <div
+        className="
+          min-h-screen!
+          w-full!
+          bg-[#fafafa]!
+          px-3!
+          py-3!
+          sm:px-4!
+          sm:py-5!
+          lg:px-6!
+          lg:py-6!
+        "
+      >
         <form
           onSubmit={handleSubmit}
-          className="animate-in!"
+          className="min-w-0! animate-in!"
         >
           {/* =================================================
               HEADER
@@ -609,120 +640,203 @@ const ProductsNew = () => {
           ================================================= */}
 
           {errors.submit && (
-            <div className="mb-4! rounded-xl! border! border-red-200! bg-red-50! px-4! py-3! text-xs! font-semibold! text-red-600! transition-all!">
-              {errors.submit}
+            <div
+              className="
+                mt-4!
+                flex!
+                min-w-0!
+                items-start!
+                gap-2.5!
+                rounded-xl!
+                border!
+                border-red-200!
+                bg-red-50!
+                px-3.5!
+                py-3!
+                text-[11px]!
+                font-semibold!
+                text-red-600!
+                sm:px-4!
+              "
+            >
+              <AlertCircle
+                size={15}
+                strokeWidth={1.9}
+                className="mt-0.5! shrink-0!"
+              />
+
+              <p className="min-w-0! flex-1!">
+                {errors.submit}
+              </p>
             </div>
           )}
 
-        {/* =================================================
-    MAIN GRID
-================================================= */}
+          {/* =================================================
+              MAIN GRID
+          ================================================= */}
 
-<div
-  className="
-    mt-4!
-    grid!
-    min-w-0!
-    grid-cols-1!
-    gap-4!
-    sm:mt-5!
-    lg:grid-cols-[minmax(0,1fr)_320px]!
-    xl:grid-cols-[minmax(0,1fr)_350px]!
-    lg:gap-5!
-  "
->
-  {/* =================================================
-      LEFT COLUMN
-  ================================================= */}
+          <div
+            className="
+              mt-4!
+              grid!
+              min-w-0!
+              grid-cols-1!
+              gap-4!
+              sm:mt-5!
+              lg:grid-cols-[minmax(0,1fr)_320px]!
+              xl:grid-cols-[minmax(0,1fr)_350px]!
+              lg:gap-5!
+            "
+          >
+            {/* =================================================
+                LEFT COLUMN
+            ================================================= */}
 
-  <div className="min-w-0! space-y-4!">
-    <ProductDetails
-      form={form}
-      errors={errors}
-      updateForm={updateForm}
-    />
+            <div
+              className="
+                min-w-0!
+                space-y-4!
+              "
+            >
+              {/* PRODUCT DETAILS */}
 
-    <ProductPricing
-      form={form}
-      errors={errors}
-      updateForm={updateForm}
-    />
+              <ProductDetails
+                form={form}
+                errors={errors}
+                updateForm={
+                  updateForm
+                }
+              />
 
-    {form.productType === "physical" && (
-      <>
-        <ProductInventory
-          form={form}
-          errors={errors}
-          updateForm={updateForm}
-        />
+              {/* PRICING */}
 
-        <ProductShipping
-          form={form}
-          updateForm={updateForm}
-        />
-      </>
-    )}
+              <ProductPricing
+                form={form}
+                errors={errors}
+                updateForm={
+                  updateForm
+                }
+              />
 
-    <ProductOptions
-      form={form}
-      errors={errors}
-      updateForm={updateForm}
-    />
+              {/* PHYSICAL PRODUCT */}
 
-    <ProductImages
-      images={images}
-      fileInputRef={fileInputRef}
-      errors={errors}
-      onChange={handleImagesChange}
-    />
+              {form.productType ===
+                "physical" && (
+                <>
+                  <ProductInventory
+                    form={form}
+                    errors={errors}
+                    updateForm={
+                      updateForm
+                    }
+                  />
 
-    {form.productType === "digital" && (
-      <DigitalFileUpload
-        file={digitalFile}
-        inputRef={digitalFileInputRef}
-        error={errors.digitalFile}
-        onChange={handleDigitalFileChange}
-      />
-    )}
-  </div>
+                  <ProductShipping
+                    form={form}
+                    updateForm={
+                      updateForm
+                    }
+                  />
+                </>
+              )}
 
-  {/* =================================================
-      RIGHT COLUMN
-      DESKTOP = ALWAYS VISIBLE
-      MOBILE = NORMAL FLOW
-  ================================================= */}
-<aside
-  className="
-    min-w-0!
-    lg:sticky!
-    lg:top-4!
-    lg:h-[calc(100vh-1.5rem)]!
-  "
->
-  <div className="flex! h-full! min-h-0! flex-col! gap-4!">
-    <div className="min-h-0! flex-1! overflow-hidden!">
-      <ProductSummary
-        form={form}
-        images={images}
-        status={form.status}
-        onStatusChange={(status) =>
-          updateForm("status", status)
-        }
-      />
-    </div>
+              {/* OPTIONS */}
 
-    <div className="shrink-0!">
-      <ProductActions
-        isCreating={isCreating}
-        onReview={handleReview}
-      />
-    </div>
-  </div>
-</aside>
-</div>
+              <ProductOptions
+                form={form}
+                errors={errors}
+                updateForm={
+                  updateForm
+                }
+              />
 
-    </form>
-  </div>
+              {/* IMAGES */}
+
+              <ProductImages
+                images={images}
+                fileInputRef={
+                  fileInputRef
+                }
+                errors={errors}
+                onChange={
+                  handleImagesChange
+                }
+              />
+
+              {/* DIGITAL FILE */}
+
+              {form.productType ===
+                "digital" && (
+                <DigitalFileUpload
+                  file={
+                    digitalFile
+                  }
+                  inputRef={
+                    digitalFileInputRef
+                  }
+                  error={
+                    errors.digitalFile
+                  }
+                  onChange={
+                    handleDigitalFileChange
+                  }
+                />
+              )}
+            </div>
+
+            {/* =================================================
+                RIGHT COLUMN
+            ================================================= */}
+
+            <aside
+              className="
+                min-w-0!
+                space-y-4!
+                lg:sticky!
+                lg:top-4!
+                lg:self-start!
+              "
+            >
+              {/* PREVIEW */}
+
+              <ProductPreview
+                form={form}
+                images={images}
+                digitalFile={
+                  digitalFile
+                }
+              />
+
+              {/* PUBLICATION */}
+
+              <ProductPublication
+                status={
+                  form.status
+                }
+                onChange={(
+                  status,
+                ) =>
+                  updateForm(
+                    "status",
+                    status,
+                  )
+                }
+              />
+
+              {/* ACTIONS */}
+
+              <ProductActions
+                isCreating={
+                  isCreating
+                }
+                onReview={
+                  handleReview
+                }
+              />
+            </aside>
+          </div>
+        </form>
+      </div>
 
       {/* =====================================================
           REVIEW MODAL
@@ -732,15 +846,230 @@ const ProductsNew = () => {
         <ProductReviewModal
           form={form}
           images={images}
-          digitalFile={digitalFile}
-          isCreating={isCreating}
-          onClose={() =>
-            setShowReview(false)
+          digitalFile={
+            digitalFile
           }
-          onCreate={handleCreate}
+          isCreating={
+            isCreating
+          }
+          onClose={() => {
+            if (!isCreating) {
+              setShowReview(
+                false,
+              );
+            }
+          }}
+          onCreate={
+            handleCreate
+          }
         />
       )}
     </>
+  );
+};
+
+/* =========================================================
+   PAGE SKELETON
+========================================================= */
+
+const ProductsNewSkeleton =
+  () => {
+    return (
+      <div
+        className="
+          min-h-screen!
+          w-full!
+          bg-[#fafafa]!
+          px-3!
+          py-3!
+          sm:px-4!
+          sm:py-5!
+          lg:px-6!
+          lg:py-6!
+        "
+      >
+        {/* HEADER */}
+
+        <div className="flex! min-w-0! items-center! justify-between! gap-3!">
+          <div className="flex! min-w-0! items-center! gap-3!">
+            <div className="skeleton! h-8! w-8! shrink-0! rounded-lg!" />
+
+            <div className="min-w-0!">
+              <div className="skeleton! h-3! w-24! rounded-md!" />
+              <div className="skeleton! mt-1.5! h-5! w-36! rounded-md!" />
+            </div>
+          </div>
+
+          <div className="flex! shrink-0! gap-2!">
+            <div className="skeleton! h-9! w-20! rounded-lg!" />
+            <div className="skeleton! h-9! w-24! rounded-lg!" />
+          </div>
+        </div>
+
+        {/* GRID */}
+
+        <div
+          className="
+            mt-5!
+            grid!
+            grid-cols-1!
+            gap-4!
+            lg:grid-cols-[minmax(0,1fr)_320px]!
+            xl:grid-cols-[minmax(0,1fr)_350px]!
+            lg:gap-5!
+          "
+        >
+          {/* LEFT */}
+
+          <div className="min-w-0! space-y-4!">
+            <PageSkeletonCard
+              titleWidth="w-28!"
+              descriptionWidth="w-64!"
+              rows={4}
+            />
+
+            <PageSkeletonCard
+              titleWidth="w-20!"
+              descriptionWidth="w-52!"
+              rows={2}
+            />
+
+            <PageSkeletonCard
+              titleWidth="w-24!"
+              descriptionWidth="w-60!"
+              rows={2}
+            />
+
+            <PageSkeletonCard
+              titleWidth="w-20!"
+              descriptionWidth="w-56!"
+              rows={3}
+            />
+
+            <div className="rounded-2xl! border! border-gray-200! bg-white! p-4! sm:p-5!">
+              <div className="flex! items-start! gap-3!">
+                <div className="skeleton! h-9! w-9! shrink-0! rounded-xl!" />
+
+                <div className="min-w-0! flex-1!">
+                  <div className="skeleton! h-4! w-28! rounded-md!" />
+                  <div className="skeleton! mt-1.5! h-3! w-64! max-w-full! rounded-md!" />
+                </div>
+              </div>
+
+              <div className="skeleton! mt-4! h-40! w-full! rounded-2xl!" />
+            </div>
+          </div>
+
+          {/* RIGHT */}
+
+          <div className="min-w-0! space-y-4!">
+            <div className="rounded-2xl! border! border-gray-200! bg-white! p-4! sm:p-5!">
+              <div className="flex! items-start! justify-between!">
+                <div>
+                  <div className="skeleton! h-3! w-20! rounded-md!" />
+                  <div className="skeleton! mt-1.5! h-4! w-32! rounded-md!" />
+                </div>
+
+                <div className="skeleton! h-6! w-14! rounded-full!" />
+              </div>
+
+              <div className="skeleton! mt-4! h-20! w-full! rounded-2xl!" />
+
+              <div className="mt-4! space-y-4!">
+                <div className="flex! justify-between!">
+                  <div className="skeleton! h-3! w-16! rounded-md!" />
+                  <div className="skeleton! h-3! w-24! rounded-md!" />
+                </div>
+
+                <div className="flex! justify-between!">
+                  <div className="skeleton! h-3! w-20! rounded-md!" />
+                  <div className="skeleton! h-3! w-20! rounded-md!" />
+                </div>
+
+                <div className="flex! justify-between!">
+                  <div className="skeleton! h-3! w-16! rounded-md!" />
+                  <div className="skeleton! h-3! w-14! rounded-md!" />
+                </div>
+              </div>
+
+              <div className="mt-4! border-t! border-gray-100! pt-4!">
+                <div className="flex! justify-between!">
+                  <div className="skeleton! h-3! w-20! rounded-md!" />
+                  <div className="skeleton! h-3! w-8! rounded-md!" />
+                </div>
+
+                <div className="skeleton! mt-2.5! h-1.5! w-full! rounded-full!" />
+              </div>
+            </div>
+
+            <div className="rounded-2xl! border! border-gray-200! bg-white! p-4!">
+              <div className="skeleton! h-4! w-24! rounded-md!" />
+              <div className="skeleton! mt-1.5! h-3! w-48! rounded-md!" />
+
+              <div className="mt-4! space-y-2!">
+                <div className="skeleton! h-14! w-full! rounded-xl!" />
+                <div className="skeleton! h-14! w-full! rounded-xl!" />
+              </div>
+            </div>
+
+            <div className="rounded-2xl! border! border-gray-200! bg-white! p-4!">
+              <div className="skeleton! h-11! w-full! rounded-lg!" />
+              <div className="skeleton! mt-2! h-10! w-full! rounded-lg!" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+/* =========================================================
+   SKELETON CARD
+========================================================= */
+
+const PageSkeletonCard = ({
+  titleWidth,
+  descriptionWidth,
+  rows,
+}: {
+  titleWidth: string;
+  descriptionWidth: string;
+  rows: number;
+}) => {
+  return (
+    <section className="rounded-2xl! border! border-gray-200! bg-white! p-4! sm:p-5!">
+      <div className="flex! items-start! gap-3!">
+        <div className="skeleton! h-9! w-9! shrink-0! rounded-xl!" />
+
+        <div className="min-w-0! flex-1!">
+          <div
+            className={`skeleton! h-4! ${titleWidth} rounded-md!`}
+          />
+
+          <div
+            className={`skeleton! mt-1.5! h-3! ${descriptionWidth} max-w-full! rounded-md!`}
+          />
+        </div>
+      </div>
+
+      <div className="mt-4! grid! grid-cols-1! gap-3! sm:grid-cols-2!">
+        {Array.from({
+          length: rows,
+        }).map((_, index) => (
+          <div
+            key={index}
+            className={
+              index ===
+              rows - 1
+                ? "sm:col-span-2!"
+                : ""
+            }
+          >
+            <div className="skeleton! mb-1.5! h-3! w-20! rounded-md!" />
+            <div className="skeleton! h-10! w-full! rounded-lg!" />
+          </div>
+        ))}
+      </div>
+    </section>
   );
 };
 

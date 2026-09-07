@@ -307,7 +307,8 @@ b {
   }
 }
 
-.skeleton {
+.skeleton,
+.skeleton\! {
   background: linear-gradient(
     90deg,
     #f1f3f5 25%,

@@ -8,7 +8,8 @@ import {
   Menu,
 } from "lucide-react";
 
-import Button from "../ui/Button";
+import { Link } from "react-router-dom";
+
 import { useEffect, useRef, useState } from "react";
 
 interface UserMenuPillProps {
@@ -397,33 +398,38 @@ const Navbar = ({
 
         {/* ================= ADD PRODUCT ================= */}
 
-        <Button
-          className="
-            flex!
-            h-9!
-            w-9!
-            items-center!
-            justify-center!
-            gap-1.5!
-            rounded-full!
-            px-0!
-
-            sm:h-10!
-            sm:w-auto!
-            sm:rounded-lg!
-            sm:px-4!
-          "
-          aria-label="Add product"
-        >
-          <Plus
-            size={17}
-            strokeWidth={2}
-          />
-
-          <span className="hidden! text-[12px]! font-semibold! sm:inline!">
-            Add product
-          </span>
-        </Button>
+    
+            <Link
+              to="/dashboard/products/new"
+              className="
+                inline-flex!
+                h-10!
+                w-full!
+                shrink-0!
+                items-center!
+                justify-center!
+                gap-1.5!
+                rounded-full!
+                bg-blue-600!
+                px-3.5!
+                text-[10px]!
+                font-semibold!
+                text-white!
+                transition-all!
+                duration-150!
+                hover:bg-blue-700!
+                active:scale-[0.99]!
+                sm:w-auto!
+                sm:text-[11px]!
+              "
+            >
+              <Plus
+                size={14}
+                strokeWidth={2}
+              />
+    
+              Add product
+            </Link>
       </div>
     </header>
   );

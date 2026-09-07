@@ -1,83 +1,38 @@
-import {
-  ImagePlus,
-  Plus,
-  Trash2,
-} from "lucide-react";
-
 import type {
   ChangeEvent,
   RefObject,
 } from "react";
 
-import type {
-  ProductImage,
-} from "./ProductsNew";
+import {
+  ImagePlus,
+  Upload,
+  X,
+} from "lucide-react";
 
-interface Props {
+import type { ProductImage } from "@/Pages/products/ProductsNew";
+
+interface ProductImagesProps {
   images: ProductImage[];
-  fileInputRef: RefObject<HTMLInputElement | null>;
-  errors?: Record<string, string>;
+  fileInputRef: RefObject<HTMLInputElement>;
+  errors: Record<string, string>;
   onChange: (
     images: ProductImage[],
   ) => void;
-  loading?: boolean;
 }
 
-const MAX_IMAGES = 6;
+const MAX_IMAGES = 8;
 
 const ProductImages = ({
   images,
   fileInputRef,
   errors,
   onChange,
-  loading = false,
-}: Props) => {
-  /* =========================================================
-     SKELETON
-  ========================================================= */
-
-  if (loading) {
-    return (
-      <section className="w-full! min-w-0! rounded-2xl! border! border-gray-200! bg-white! p-4! shadow-sm! sm:p-5!">
-        <div className="animate-pulse! space-y-4!">
-          {/* Header */}
-
-          <div className="flex! items-center! justify-between! gap-3!">
-            <div className="min-w-0!">
-              <div className="skeleton h-3.5! w-20! rounded-md!" />
-
-              <div className="skeleton mt-1.5! h-2.5! w-44! max-w-full! rounded-md!" />
-            </div>
-
-            <div className="skeleton h-3! w-8! shrink-0! rounded-md!" />
-          </div>
-
-          {/* Image grid */}
-
-          <div className="grid! grid-cols-2! gap-3! sm:grid-cols-3! lg:grid-cols-4!">
-            {Array.from({
-              length: 4,
-            }).map((_, index) => (
-              <div
-                key={index}
-                className="skeleton aspect-square! rounded-xl!"
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  /* =========================================================
-     IMAGE SELECT
-  ========================================================= */
-
-  const handleChange = (
+}: ProductImagesProps) => {
+  const handleFiles = (
     event: ChangeEvent<HTMLInputElement>,
   ) => {
     const files = Array.from(
-      event.target.files ?? [],
+      event.target.files || [],
     );
 
     if (!files.length) {
@@ -87,84 +42,115 @@ const ProductImages = ({
     const remainingSlots =
       MAX_IMAGES - images.length;
 
-    if (remainingSlots <= 0) {
-      event.target.value = "";
-      return;
-    }
-
-    const nextFiles = files
+    const selectedFiles = files
       .filter((file) =>
         file.type.startsWith("image/"),
       )
       .slice(0, remainingSlots);
 
     const nextImages: ProductImage[] =
-      nextFiles.map((file) => ({
-        id: crypto.randomUUID(),
+      selectedFiles.map((file) => ({
+        id: `${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2)}`,
         file,
-        preview:
-          URL.createObjectURL(file),
+        preview: URL.createObjectURL(file),
       }));
 
-    onChange([
-      ...images,
-      ...nextImages,
-    ]);
+    if (nextImages.length > 0) {
+      onChange([
+        ...images,
+        ...nextImages,
+      ]);
+    }
 
     event.target.value = "";
   };
 
-  /* =========================================================
-     REMOVE IMAGE
-  ========================================================= */
-
-  const removeImage = (
-    id: string,
+  const handleRemove = (
+    imageId: string,
   ) => {
-    const image = images.find(
-      (item) => item.id === id,
+    const imageToRemove = images.find(
+      (image) => image.id === imageId,
     );
 
-    if (image) {
+    if (imageToRemove) {
       URL.revokeObjectURL(
-        image.preview,
+        imageToRemove.preview,
       );
     }
 
     onChange(
       images.filter(
-        (item) => item.id !== id,
+        (image) => image.id !== imageId,
       ),
     );
   };
 
-  /* =========================================================
-     OPEN FILE PICKER
-  ========================================================= */
+  const handleDrop = (
+    event: React.DragEvent<HTMLDivElement>,
+  ) => {
+    event.preventDefault();
 
-  const openFilePicker = () => {
+    const files = Array.from(
+      event.dataTransfer.files || [],
+    );
+
+    if (!files.length) {
+      return;
+    }
+
+    const remainingSlots =
+      MAX_IMAGES - images.length;
+
+    const selectedFiles = files
+      .filter((file) =>
+        file.type.startsWith("image/"),
+      )
+      .slice(0, remainingSlots);
+
+    const nextImages: ProductImage[] =
+      selectedFiles.map((file) => ({
+        id: `${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2)}`,
+        file,
+        preview: URL.createObjectURL(file),
+      }));
+
+    if (nextImages.length > 0) {
+      onChange([
+        ...images,
+        ...nextImages,
+      ]);
+    }
+  };
+
+  const openPicker = () => {
     fileInputRef.current?.click();
   };
 
-  /* =========================================================
-     RENDER
-  ========================================================= */
-
   return (
-    <section className="w-full! min-w-0! rounded-2xl! border! border-gray-200! bg-white! p-4! shadow-sm! transition-all! duration-200! sm:p-5!">
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
+    <section className="rounded-2xl! border! border-gray-200! bg-white! p-4! sm:p-5!">
+      {/* HEADER */}
+      <div className="mb-4! flex! items-start! justify-between! gap-3!">
+        <div className="flex! min-w-0! items-start! gap-3!">
+          <div className="flex! h-9! w-9! shrink-0! items-center! justify-center! rounded-xl! border! border-gray-200! bg-[#fafafa]! text-gray-600!">
+            <ImagePlus
+              size={16}
+              strokeWidth={1.9}
+            />
+          </div>
 
-      <div className="mb-4! flex! items-center! justify-between! gap-3!">
-        <div className="min-w-0!">
-          <h2 className="font-heading! text-[14px]! font-semibold! tracking-tight! text-gray-900! sm:text-[15px]!">
-            Images
-          </h2>
+          <div className="min-w-0!">
+            <h2 className="text-[14px]! font-semibold! tracking-tight! text-gray-900! sm:text-[15px]!">
+              Product images
+            </h2>
 
-          <p className="mt-0.5! truncate! text-[10px]! font-medium! text-gray-500! sm:text-[11px]!">
-            Add up to {MAX_IMAGES} product images.
-          </p>
+            <p className="mt-0.5! text-[10px]! font-medium! leading-relaxed! text-gray-500! sm:text-[11px]!">
+              Upload clear images to present your product.
+            </p>
+          </div>
         </div>
 
         <span className="shrink-0! text-[10px]! font-semibold! text-gray-400!">
@@ -172,216 +158,231 @@ const ProductImages = ({
         </span>
       </div>
 
-      {/* =====================================================
-          HIDDEN INPUT
-      ===================================================== */}
+      {/* DROPZONE */}
+      {images.length < MAX_IMAGES && (
+        <div
+          onDragOver={(event) =>
+            event.preventDefault()
+          }
+          onDrop={handleDrop}
+          onClick={openPicker}
+          className="
+            group!
+            cursor-pointer!
+            rounded-2xl!
+            border!
+            border-dashed!
+            border-gray-300!
+            bg-[#fafafa]!
+            px-4!
+            py-6!
+            text-center!
+            transition!
+            duration-150!
+            hover:border-blue-300!
+            hover:bg-blue-50/40!
+          "
+        >
+          <div className="mx-auto! flex! h-10! w-10! items-center! justify-center! rounded-xl! border! border-gray-200! bg-white! text-gray-500! transition! duration-150! group-hover:border-blue-200! group-hover:text-blue-600!">
+            <Upload
+              size={17}
+              strokeWidth={1.8}
+            />
+          </div>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
-        multiple
-        hidden
-        onChange={handleChange}
-      />
+          <p className="mt-3! text-[11px]! font-semibold! text-gray-700! sm:text-[12px]!">
+            Click to upload or drag and drop
+          </p>
 
-      {/* =====================================================
-          IMAGE GRID
-      ===================================================== */}
+          <p className="mt-1! text-[10px]! font-medium! text-gray-400!">
+            PNG, JPG or WEBP
+          </p>
 
-      <div className="grid! grid-cols-2! gap-3! sm:grid-cols-3! lg:grid-cols-4!">
-        {/* EXISTING IMAGES */}
-
-        {images.map(
-          (image, index) => (
-            <div
-              key={image.id}
-              className="
-                group!
-                relative!
-                aspect-square!
-                min-w-0!
-                overflow-hidden!
-                rounded-xl!
-                border!
-                border-gray-200!
-                bg-[#fafafa]!
-                transition-all!
-                duration-200!
-                hover:border-gray-300!
-              "
-            >
-              {/* IMAGE */}
-
-              <img
-                src={image.preview}
-                alt={
-                  image.file.name ||
-                  `Product image ${
-                    index + 1
-                  }`
-                }
-                className="
-                  h-full!
-                  w-full!
-                  object-cover!
-                  transition-transform!
-                  duration-200!
-                  group-hover:scale-[1.02]!
-                "
-              />
-
-              {/* COVER BADGE */}
-
-              {index === 0 && (
-                <span className="absolute! bottom-2! left-2! rounded-full! bg-gray-900/90! px-2! py-1! text-[9px]! font-semibold! text-white! shadow-sm!">
-                  Cover
-                </span>
-              )}
-
-              {/* REMOVE */}
-
-              <button
-                type="button"
-                onClick={() =>
-                  removeImage(
-                    image.id,
-                  )
-                }
-                aria-label={`Remove ${
-                  image.file.name
-                }`}
-                className="
-                  absolute!
-                  right-2!
-                  top-2!
-                  flex!
-                  h-7!
-                  w-7!
-                  items-center!
-                  justify-center!
-                  rounded-full!
-                  bg-white/95!
-                  text-gray-500!
-                  opacity-100!
-                  shadow-sm!
-                  transition-all!
-                  duration-150!
-                  hover:bg-red-50!
-                  hover:text-red-500!
-                  active:scale-90!
-                "
-              >
-                <Trash2
-                  size={13}
-                  strokeWidth={1.9}
-                />
-              </button>
-            </div>
-          ),
-        )}
-
-        {/* ===================================================
-            ADD IMAGE
-        =================================================== */}
-
-        {images.length <
-          MAX_IMAGES && (
           <button
             type="button"
-            onClick={openFilePicker}
+            onClick={(event) => {
+              event.stopPropagation();
+              openPicker();
+            }}
             className="
-              group!
-              flex!
-              aspect-square!
-              min-w-0!
-              cursor-pointer!
-              flex-col!
+              mt-3!
+              inline-flex!
               items-center!
-              justify-center!
               gap-1.5!
-              rounded-xl!
+              rounded-lg!
               border!
-              border-dashed!
               border-gray-200!
-              bg-[#fafafa]!
-              p-3!
-              text-center!
-              transition-all!
-              duration-200!
-              hover:border-blue-400!
-              hover:bg-blue-50/30!
-              active:scale-[0.99]!
+              bg-white!
+              px-3!
+              py-2!
+              text-[10px]!
+              font-semibold!
+              text-gray-700!
+              transition!
+              duration-150!
+              hover:border-blue-200!
+              hover:text-blue-600!
             "
           >
-            <div
-              className="
-                flex!
-                h-9!
-                w-9!
-                items-center!
-                justify-center!
-                rounded-xl!
-                border!
-                border-gray-200!
-                bg-white!
-                text-gray-400!
-                shadow-sm!
-                transition-all!
-                duration-200!
-                group-hover:border-blue-200!
-                group-hover:text-blue-600!
-              "
-            >
-              <ImagePlus
-                size={16}
-                strokeWidth={1.9}
-              />
-            </div>
+            <Upload
+              size={13}
+              strokeWidth={1.9}
+            />
 
-            <span className="text-[10px]! font-semibold! text-gray-600! transition-colors! group-hover:text-blue-600! sm:text-[11px]!">
-              Add image
-            </span>
-
-            <span className="text-[9px]! font-medium! text-gray-400!">
-              {MAX_IMAGES -
-                images.length}{" "}
-              remaining
-            </span>
+            Choose files
           </button>
-        )}
-      </div>
-
-      {/* =====================================================
-          EMPTY STATE
-      ===================================================== */}
-
-      {images.length === 0 && (
-        <div className="pointer-events-none! mt-3! flex! items-center! gap-2! rounded-xl! border! border-gray-100! bg-gray-50/60! px-3! py-2.5!">
-          <Plus
-            size={12}
-            className="shrink-0! text-gray-400!"
-          />
-
-          <p className="text-[9px]! font-medium! leading-relaxed! text-gray-400!">
-            The first image you add will
-            automatically be used as the
-            product cover.
-          </p>
         </div>
       )}
 
-      {/* =====================================================
-          ERROR
-      ===================================================== */}
+      {/* INPUT */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        multiple
+        onChange={handleFiles}
+        className="hidden!"
+      />
 
-      {errors?.images && (
-        <p className="mt-2! text-[10px]! font-semibold! leading-relaxed! text-red-500!">
+      {/* ERROR */}
+      {errors.images && (
+        <p className="mt-2! text-[10px]! font-medium! text-red-600!">
           {errors.images}
         </p>
       )}
+
+      {/* PREVIEWS */}
+      {images.length > 0 && (
+        <div className="mt-4! grid! grid-cols-2! gap-2! sm:grid-cols-4!">
+          {images.map(
+            (image, index) => (
+              <div
+                key={image.id}
+                className="
+                  group!
+                  relative!
+                  aspect-square!
+                  overflow-hidden!
+                  rounded-xl!
+                  border!
+                  border-gray-200!
+                  bg-[#fafafa]!
+                "
+              >
+                <img
+                  src={image.preview}
+                  alt={`Product image ${index + 1}`}
+                  className="h-full! w-full! object-cover!"
+                />
+
+                {/* INDEX */}
+                <div className="absolute! left-2! top-2! rounded-md! bg-black/55! px-1.5! py-0.5! text-[9px]! font-semibold! text-white!">
+                  {index + 1}
+                </div>
+
+                {/* REMOVE */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleRemove(
+                      image.id,
+                    )
+                  }
+                  aria-label={`Remove image ${index + 1}`}
+                  className="
+                    absolute!
+                    right-2!
+                    top-2!
+                    flex!
+                    h-7!
+                    w-7!
+                    items-center!
+                    justify-center!
+                    rounded-md!
+                    bg-white/95!
+                    text-gray-600!
+                    opacity-100!
+                    shadow-sm!
+                    transition!
+                    duration-150!
+                    hover:text-red-600!
+                    sm:opacity-0!
+                    sm:group-hover:opacity-100!
+                  "
+                >
+                  <X
+                    size={13}
+                    strokeWidth={2}
+                  />
+                </button>
+              </div>
+            ),
+          )}
+        </div>
+      )}
+
+      {/* INFO */}
+      <div className="mt-3! flex! flex-wrap! items-center! justify-between! gap-2!">
+        <p className="text-[10px]! font-medium! text-gray-400!">
+          The first image will be used as the main product image.
+        </p>
+
+        {images.length > 0 && (
+          <button
+            type="button"
+            onClick={openPicker}
+            disabled={
+              images.length >= MAX_IMAGES
+            }
+            className="
+              shrink-0!
+              rounded-md!
+              px-2!
+              py-1.5!
+              text-[10px]!
+              font-semibold!
+              text-blue-600!
+              transition!
+              duration-150!
+              hover:bg-blue-50!
+              disabled:cursor-not-allowed!
+              disabled:opacity-40!
+            "
+          >
+            Add more
+          </button>
+        )}
+      </div>
     </section>
   );
 };
 
 export default ProductImages;
+
+/* =========================================================
+   SKELETON
+========================================================= */
+
+export const ProductImagesSkeleton = () => {
+  return (
+    <section className="rounded-2xl! border! border-gray-200! bg-white! p-4! sm:p-5!">
+      <div className="mb-4! flex! items-start! gap-3!">
+        <div className="skeleton! h-9! w-9! shrink-0! rounded-xl!" />
+
+        <div className="min-w-0! flex-1!">
+          <div className="skeleton! h-4! w-28! rounded-md!" />
+          <div className="skeleton! mt-1.5! h-3! w-64! max-w-full! rounded-md!" />
+        </div>
+      </div>
+
+      <div className="skeleton! h-40! w-full! rounded-2xl!" />
+
+      <div className="mt-4! grid! grid-cols-2! gap-2! sm:grid-cols-4!">
+        <div className="skeleton! aspect-square! rounded-xl!" />
+        <div className="skeleton! aspect-square! rounded-xl!" />
+        <div className="skeleton! aspect-square! rounded-xl!" />
+        <div className="skeleton! aspect-square! rounded-xl!" />
+      </div>
+    </section>
+  );
+};

@@ -1,212 +1,411 @@
-import { Package } from "lucide-react";
-import type { ProductFormData } from "./ProductsNew";
+import {
+  Hash,
+  Package,
+  ToggleLeft,
+} from "lucide-react";
 
-interface Props {
-  form?: ProductFormData;
-  errors?: Record<string, string>;
-  updateForm?: <K extends keyof ProductFormData>(
+import type {
+  ProductFormData,
+} from "./ProductsNew";
+
+type ProductInventoryProps = {
+  form: ProductFormData;
+  errors: Record<string, string>;
+  updateForm: <K extends keyof ProductFormData>(
     key: K,
     value: ProductFormData[K],
   ) => void;
   loading?: boolean;
-}
+};
 
-const inputClass =
-  "h-10! w-full! min-w-0! rounded-xl! border! border-gray-200! bg-[#fafafa]! px-3.5! text-xs! font-medium! text-gray-900! outline-none! transition-all! duration-150! placeholder:text-gray-400! focus:border-blue-600! focus:bg-white! focus:ring-2! focus:ring-blue-600/10! disabled:cursor-not-allowed! disabled:opacity-60!";
+const ProductInventorySkeleton = () => {
+  return (
+    <section
+      className="
+        overflow-hidden!
+        rounded-2xl!
+        border!
+        border-gray-200!
+        bg-white!
+      "
+    >
+      <div className="border-b! border-gray-100! px-4! py-3.5! sm:px-5!">
+        <div className="skeleton h-4! w-24! rounded-md!" />
+        <div className="skeleton mt-1.5! h-2.5! w-48! max-w-full! rounded-md!" />
+      </div>
+
+      <div className="space-y-4! p-4! sm:p-5!">
+        <div className="skeleton h-11! rounded-xl!" />
+
+        <div className="grid! gap-4! sm:grid-cols-2!">
+          <div>
+            <div className="skeleton mb-2! h-2.5! w-12!" />
+            <div className="skeleton h-10! rounded-lg!" />
+          </div>
+
+          <div>
+            <div className="skeleton mb-2! h-2.5! w-24!" />
+            <div className="skeleton h-10! rounded-lg!" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const ProductInventory = ({
   form,
   errors,
   updateForm,
   loading = false,
-}: Props) => {
-  /* =========================================================
-     SKELETON
-  ========================================================= */
-
+}: ProductInventoryProps) => {
   if (loading) {
-    return (
-      <section className="w-full! min-w-0! rounded-2xl! border! border-gray-200! bg-white! p-4! shadow-sm! sm:p-5!">
-        <div className="animate-pulse! space-y-4!">
-          <div className="flex! items-center! gap-2.5!">
-            <div className="skeleton h-8! w-8! shrink-0! rounded-xl!" />
-
-            <div className="min-w-0! space-y-1.5!">
-              <div className="skeleton h-3.5! w-20! rounded-md!" />
-              <div className="skeleton h-2.5! w-48! max-w-full! rounded-md!" />
-            </div>
-          </div>
-
-          <div className="skeleton h-[68px]! w-full! rounded-2xl!" />
-
-          <div className="grid! grid-cols-1! gap-3! sm:grid-cols-2!">
-            <div className="space-y-1.5!">
-              <div className="skeleton h-2.5! w-8! rounded-md!" />
-              <div className="skeleton h-10! w-full! rounded-xl!" />
-            </div>
-
-            <div className="space-y-1.5!">
-              <div className="skeleton h-2.5! w-24! rounded-md!" />
-              <div className="skeleton h-10! w-full! rounded-xl!" />
-            </div>
-          </div>
-        </div>
-      </section>
-    );
+    return <ProductInventorySkeleton />;
   }
-
-  if (!form || !updateForm) {
-    return null;
-  }
-
-  /* =========================================================
-     RENDER
-  ========================================================= */
 
   return (
-    <section className="w-full! min-w-0! rounded-2xl! border! border-gray-200! bg-white! p-4! shadow-sm! transition-all! duration-200! sm:p-5!">
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
-      <div className="mb-4! flex! items-center! gap-2.5!">
-        <div className="flex! h-8! w-8! shrink-0! items-center! justify-center! rounded-xl! border! border-gray-200! bg-[#fafafa]! text-gray-600!">
-          <Package
-            size={15}
-            strokeWidth={1.9}
-          />
-        </div>
-
-        <div className="min-w-0!">
-          <h2 className="font-heading! text-[14px]! font-semibold! tracking-tight! text-gray-900! sm:text-[15px]!">
-            Inventory
-          </h2>
-
-          <p className="mt-0.5! truncate! text-[10px]! font-medium! text-gray-500! sm:text-[11px]!">
-            Manage stock and product identification.
-          </p>
-        </div>
-      </div>
-
-      {/* =====================================================
-          TRACK INVENTORY
-      ===================================================== */}
+    <section
+      className="
+        overflow-hidden!
+        rounded-2xl!
+        border!
+        border-gray-200!
+        bg-white!
+      "
+    >
+      {/* HEADER */}
 
       <div
-        className={`mb-4! flex! items-center! justify-between! gap-4! rounded-2xl! border! p-3.5! transition-all! duration-200! sm:p-4! ${
-          form.trackInventory
-            ? "border-blue-100! bg-blue-50/40!"
-            : "border-gray-200! bg-[#fafafa]!"
-        }`}
+        className="
+          border-b!
+          border-gray-100!
+          px-4!
+          py-3.5!
+          sm:px-5!
+        "
       >
-        <div className="min-w-0!">
-          <p className="text-[11px]! font-semibold! text-gray-900! sm:text-xs!">
-            Track inventory
-          </p>
+        <div className="flex! items-center! gap-1.5!">
+          <Package
+            size={14}
+            strokeWidth={1.8}
+            className="text-gray-400!"
+          />
 
-          <p className="mt-0.5! text-[10px]! font-medium! leading-relaxed! text-gray-500!">
-            {form.trackInventory
-              ? "Stock quantity will be tracked."
-              : "Stock tracking is disabled."}
-          </p>
+          <h2
+            className="
+              text-[14px]!
+              font-semibold!
+              tracking-tight!
+              text-gray-900!
+            "
+          >
+            Inventory
+          </h2>
         </div>
 
-        <button
-          type="button"
-          role="switch"
-          aria-checked={form.trackInventory}
-          aria-label="Track inventory"
-          onClick={() =>
-            updateForm(
-              "trackInventory",
-              !form.trackInventory,
-            )
-          }
-          className={`relative! h-6! w-11! shrink-0! rounded-full! transition-colors! duration-200! focus:outline-none! focus:ring-2! focus:ring-blue-600/20! ${
-            form.trackInventory
-              ? "bg-blue-600!"
-              : "bg-gray-300!"
-          }`}
+        <p
+          className="
+            mt-0.5!
+            text-[10px]!
+            font-medium!
+            text-gray-500!
+            sm:text-[11px]!
+          "
         >
-          <span
-            className={`absolute! top-1! h-4! w-4! rounded-full! bg-white! shadow-sm! transition-transform! duration-200! ${
-              form.trackInventory
-                ? "translate-x-6!"
-                : "translate-x-1!"
-            }`}
-          />
-        </button>
+          Track stock and product identification.
+        </p>
       </div>
 
-      {/* =====================================================
-          FIELDS
-      ===================================================== */}
+      {/* CONTENT */}
 
-      <div className="grid! min-w-0! grid-cols-1! gap-3! sm:grid-cols-2!">
-        {/* SKU */}
+      <div className="space-y-4! p-4! sm:p-5!">
+        {/* TRACK INVENTORY */}
 
-        <div className="min-w-0!">
-          <label
-            htmlFor="product-sku"
-            className="mb-1.5! block! text-[10px]! font-semibold! text-gray-700! sm:text-[11px]!"
-          >
-            SKU
-          </label>
+        <div
+          className={`
+            flex!
+            min-w-0!
+            items-center!
+            justify-between!
+            gap-3!
+            rounded-xl!
+            border!
+            px-3!
+            py-2.5!
+            transition-colors!
+            duration-150!
+            ${
+              form.trackInventory
+                ? "border-blue-100! bg-blue-50/30!"
+                : "border-gray-200! bg-[#fafafa]!"
+            }
+          `}
+        >
+          <div className="flex! min-w-0! items-center! gap-2.5!">
+            <span
+              className={`
+                flex!
+                h-8!
+                w-8!
+                shrink-0!
+                items-center!
+                justify-center!
+                rounded-lg!
+                border!
+                bg-white!
+                ${
+                  form.trackInventory
+                    ? "border-blue-200! text-blue-600!"
+                    : "border-gray-200! text-gray-500!"
+                }
+              `}
+            >
+              <ToggleLeft
+                size={15}
+                strokeWidth={1.8}
+              />
+            </span>
 
-          <input
-            id="product-sku"
-            type="text"
-            value={form.sku}
-            onChange={(event) =>
+            <div className="min-w-0!">
+              <p
+                className="
+                  truncate!
+                  text-[11px]!
+                  font-semibold!
+                  text-gray-900!
+                "
+              >
+                Track inventory
+              </p>
+
+              <p
+                className="
+                  mt-0.5!
+                  truncate!
+                  text-[9px]!
+                  font-medium!
+                  text-gray-500!
+                "
+              >
+                Keep track of available units.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            role="switch"
+            aria-checked={form.trackInventory}
+            aria-label="Track inventory"
+            onClick={() =>
               updateForm(
-                "sku",
-                event.target.value,
+                "trackInventory",
+                !form.trackInventory,
               )
             }
-            placeholder="PROD-001"
-            autoComplete="off"
-            className={inputClass}
+            className={`
+              relative!
+              h-6!
+              w-10!
+              shrink-0!
+              rounded-full!
+              transition-colors!
+              duration-150!
+              focus:outline-none!
+              focus:ring-2!
+              focus:ring-blue-500/20!
+              ${
+                form.trackInventory
+                  ? "bg-blue-600!"
+                  : "bg-gray-300!"
+              }
+            `}
+          >
+            <span
+              className={`
+                absolute!
+                top-1!
+                h-4!
+                w-4!
+                rounded-full!
+                bg-white!
+                shadow-sm!
+                transition-transform!
+                duration-150!
+                ${
+                  form.trackInventory
+                    ? "translate-x-5!"
+                    : "translate-x-1!"
+                }
+              `}
+            />
+          </button>
+        </div>
+
+        {/* STOCK + SKU */}
+
+        <div className="grid! gap-4! sm:grid-cols-2!">
+          <Field
+            id="product-stock"
+            label="Stock"
+            value={form.stock}
+            placeholder="0"
+            type="number"
+            disabled={!form.trackInventory}
+            error={errors.stock}
+            onChange={(value) =>
+              updateForm("stock", value)
+            }
+          />
+
+          <Field
+            id="product-sku"
+            label={
+              <>
+                SKU{" "}
+                <span className="font-medium! text-gray-400!">
+                  (Optional)
+                </span>
+              </>
+            }
+            value={form.sku}
+            placeholder="SKU-001"
+            icon={
+              <Hash
+                size={12}
+                strokeWidth={1.8}
+              />
+            }
+            onChange={(value) =>
+              updateForm("sku", value)
+            }
           />
         </div>
 
-        {/* STOCK */}
-
-        {form.trackInventory && (
-          <div className="min-w-0!">
-            <label
-              htmlFor="product-stock"
-              className="mb-1.5! block! text-[10px]! font-semibold! text-gray-700! sm:text-[11px]!"
-            >
-              Stock quantity
-            </label>
-
-            <input
-              id="product-stock"
-              type="number"
-              min="0"
-              inputMode="numeric"
-              value={form.stock}
-              onChange={(event) =>
-                updateForm(
-                  "stock",
-                  event.target.value,
-                )
-              }
-              className={inputClass}
-            />
-
-            {errors?.stock && (
-              <p
-                role="alert"
-                className="mt-1.5! text-[10px]! font-semibold! leading-relaxed! text-red-500!"
-              >
-                {errors.stock}
-              </p>
-            )}
+        {!form.trackInventory && (
+          <div
+            className="
+              flex!
+              items-center!
+              gap-2!
+              text-[9px]!
+              font-medium!
+              text-gray-500!
+            "
+          >
+            <span className="h-1.5! w-1.5! shrink-0! rounded-full! bg-gray-300!" />
+            Inventory tracking is disabled for this product.
           </div>
         )}
       </div>
     </section>
+  );
+};
+
+const Field = ({
+  id,
+  label,
+  value,
+  placeholder,
+  type = "text",
+  icon,
+  disabled = false,
+  error,
+  onChange,
+}: {
+  id: string;
+  label: React.ReactNode;
+  value: string;
+  placeholder?: string;
+  type?: string;
+  icon?: React.ReactNode;
+  disabled?: boolean;
+  error?: string;
+  onChange: (value: string) => void;
+}) => {
+  return (
+    <div className="min-w-0!">
+      <label
+        htmlFor={id}
+        className="
+          mb-1.5!
+          block!
+          text-[11px]!
+          font-semibold!
+          text-gray-700!
+        "
+      >
+        {label}
+      </label>
+
+      <div className="relative!">
+        {icon && (
+          <span
+            className="
+              pointer-events-none!
+              absolute!
+              left-3!
+              top-1/2!
+              -translate-y-1/2!
+              text-gray-400!
+            "
+          >
+            {icon}
+          </span>
+        )}
+
+        <input
+          id={id}
+          type={type}
+          inputMode={
+            type === "number"
+              ? "numeric"
+              : undefined
+          }
+          value={value}
+          placeholder={placeholder}
+          disabled={disabled}
+          onChange={(event) =>
+            onChange(
+              event.target.value,
+            )
+          }
+          className={`
+            h-10!
+            w-full!
+            min-w-0!
+            rounded-lg!
+            border!
+            border-gray-200!
+            bg-white!
+            ${
+              icon
+                ? "pl-8! pr-3!"
+                : "px-3!"
+            }
+            text-[11px]!
+            font-medium!
+            text-gray-900!
+            outline-none!
+            transition-all!
+            duration-150!
+            placeholder:text-gray-400!
+            focus:border-blue-500!
+            focus:ring-2!
+            focus:ring-blue-500/10!
+            disabled:cursor-not-allowed!
+            disabled:bg-gray-50!
+            disabled:text-gray-400!
+          `}
+        />
+      </div>
+
+      {error && (
+        <p className="mt-1.5! text-[9px]! font-medium! text-red-500!">
+          {error}
+        </p>
+      )}
+    </div>
   );
 };
 

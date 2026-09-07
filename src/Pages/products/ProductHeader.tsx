@@ -1,112 +1,201 @@
-import { ChevronLeft } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Eye,
+  PackagePlus,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 import type { ProductStatus } from "./ProductsNew";
 
-interface Props {
-  status?: ProductStatus;
+interface ProductHeaderProps {
+  status: ProductStatus;
   loading?: boolean;
 }
 
-const ProductHeader = ({
-  status = "draft",
-  loading = false,
-}: Props) => {
-  /* =========================================================
-     SKELETON
-  ========================================================= */
+const ProductHeaderSkeleton = () => {
+  return (
+    <header className="min-w-0!">
+      <div className="flex! min-w-0! items-center! justify-between! gap-3!">
+        <div className="min-w-0! flex! items-center! gap-2.5!">
+          <div className="skeleton h-8! w-8! shrink-0! rounded-lg!" />
 
-  if (loading) {
-    return (
-      <header className="mb-4! animate-pulse! sm:mb-5!">
-        <div className="skeleton h-3! w-20! rounded-md!" />
-
-        <div className="mt-2! flex! items-start! justify-between! gap-3!">
-          <div className="min-w-0! flex-1!">
-            <div className="skeleton h-6! w-40! rounded-md! sm:h-7! sm:w-48!" />
-
-            <div className="skeleton mt-2! h-2.5! w-64! max-w-full! rounded-md! sm:h-3! sm:w-80!" />
+          <div className="min-w-0! space-y-1.5!">
+            <div className="skeleton h-4! w-32! rounded-md!" />
+            <div className="skeleton h-2.5! w-44! max-w-full! rounded-md!" />
           </div>
-
-          <div className="skeleton h-6! w-16! shrink-0! rounded-full!" />
         </div>
-      </header>
-    );
+
+        <div className="flex! shrink-0! items-center! gap-2!">
+          <div className="skeleton hidden! h-9! w-20! rounded-lg! sm:block!" />
+          <div className="skeleton h-9! w-24! rounded-lg!" />
+        </div>
+      </div>
+    </header>
+  );
+};
+
+const ProductHeader = ({
+  status,
+  loading = false,
+}: ProductHeaderProps) => {
+  if (loading) {
+    return <ProductHeaderSkeleton />;
   }
 
   const isPublished = status === "published";
 
   return (
-    <header className="mb-4! sm:mb-5!">
-      {/* =====================================================
-          BREADCRUMB
-      ===================================================== */}
-
-      <Link
-        to="/dashboard/products"
+    <header className="min-w-0!">
+      <div
         className="
-          inline-flex!
+          flex!
+          min-w-0!
           items-center!
-          gap-1!
-          text-[10px]!
-          font-medium!
-          text-gray-400!
-          transition-colors!
-          duration-150!
-          hover:text-gray-700!
+          justify-between!
+          gap-3!
         "
       >
-        <ChevronLeft
-          size={13}
-          strokeWidth={1.8}
-        />
+        {/* LEFT */}
 
-        Products
-      </Link>
+        <div className="flex! min-w-0! items-center! gap-2.5!">
+          <Link
+            to="/dashboard/products"
+            aria-label="Back to products"
+            className="
+              inline-flex!
+              h-8!
+              w-8!
+              shrink-0!
+              items-center!
+              justify-center!
+              rounded-lg!
+              border!
+              border-gray-200!
+              bg-white!
+              text-gray-500!
+              transition-all!
+              duration-150!
+              hover:border-gray-300!
+              hover:bg-gray-50!
+              hover:text-gray-800!
+              active:scale-[0.97]!
+            "
+          >
+            <ArrowLeft
+              size={14}
+              strokeWidth={1.9}
+            />
+          </Link>
 
-      {/* =====================================================
-          TITLE AREA
-      ===================================================== */}
+          <div className="min-w-0!">
+            <div className="flex! min-w-0! items-center! gap-2!">
+             
 
-      <div className="mt-2! flex! min-w-0! items-start! justify-between! gap-3!">
-        <div className="min-w-0! flex-1!">
-          <h1 className="font-heading! text-[20px]! font-semibold! leading-tight! tracking-tight! text-gray-900! sm:text-[22px]!">
-            Add product
-          </h1>
+              <h1
+                className="
+                  truncate!
+                  font-heading!
+                  text-[15px]!
+                  font-semibold!
+                  tracking-tight!
+                  text-gray-900!
+                  sm:text-base!
+                "
+              >
+                New product
+              </h1>
 
-          <p className="mt-1! max-w-xl! text-[10px]! font-medium! leading-relaxed! text-gray-500! sm:text-[11px]!">
-            Create and configure a new product
-            for your store.
-          </p>
+              <span
+                className="
+                  hidden!
+                  shrink-0!
+                  rounded-full!
+                  bg-gray-100!
+                  px-1.5!
+                  py-0.5!
+                  text-[8px]!
+                  font-semibold!
+                  text-gray-500!
+                  sm:inline-flex!
+                "
+              >
+                {isPublished
+                  ? "Published"
+                  : "Draft"}
+              </span>
+            </div>
+
+            <p
+              className="
+                mt-0.5!
+                truncate!
+                text-[10px]!
+                font-medium!
+                text-gray-500!
+                sm:text-[11px]!
+              "
+            >
+              Create and configure your product.
+            </p>
+          </div>
         </div>
 
-        {/* =================================================
-            STATUS
-        ================================================= */}
+        {/* ACTIONS */}
 
-        <span
-          className={`
-            shrink-0!
-            rounded-full!
-            border!
-            px-2.5!
-            py-1!
-            text-[9px]!
-            font-semibold!
-            transition-colors!
-            duration-150!
-            ${
-              isPublished
-                ? "border-blue-200! bg-blue-50! text-blue-600!"
-                : "border-gray-200! bg-gray-50! text-gray-600!"
-            }
-          `}
-        >
-          {isPublished
-            ? "Published"
-            : "Draft"}
-        </span>
+        <div className="flex! shrink-0! items-center! gap-1.5!">
+          <Link
+            to="/dashboard/home"
+            className="
+              hidden!
+              h-9!
+              items-center!
+              justify-center!
+              gap-1.5!
+              rounded-lg!
+              border!
+              border-gray-200!
+              bg-white!
+              px-3!
+              text-[10px]!
+              font-semibold!
+              text-gray-600!
+              transition-all!
+              duration-150!
+              hover:border-gray-300!
+              hover:bg-gray-50!
+              hover:text-gray-900!
+              active:scale-[0.98]!
+              sm:inline-flex!
+            "
+          >
+            Cancel
+          </Link>
+
+      
+          {isPublished && (
+            <div
+              className="
+                hidden!
+                items-center!
+                gap-1!
+                text-[9px]!
+                font-medium!
+                text-green-600!
+                lg:flex!
+              "
+            >
+              <CheckCircle2
+                size={12}
+                strokeWidth={1.9}
+              />
+              Ready
+            </div>
+          )}
+        </div>
       </div>
+
+      <div className="mt-3! h-px! w-full! bg-gray-100!" />
     </header>
   );
 };

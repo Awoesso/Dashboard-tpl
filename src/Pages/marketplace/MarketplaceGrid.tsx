@@ -1,6 +1,6 @@
 import ProductCard, {
   type MarketplaceProduct,
-} from "./ProductCard";
+} from "./ProductRow";
 
 type MarketplaceGridProps = {
   products: MarketplaceProduct[];
