@@ -269,49 +269,50 @@ const NotificationItem = ({
 
       {/* SWITCH */}
 
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        aria-label={`Toggle ${title}`}
-        onClick={onChange}
-        className={`
-          relative!
-          h-6!
-          w-11!
-          shrink-0!
-          rounded-full!
-          transition-colors!
-          duration-200!
-          focus:outline-none!
-          focus:ring-2!
-          focus:ring-blue-600/20!
-          ${
-            checked
-              ? "bg-blue-600!"
-              : "bg-gray-300!"
-          }
-        `}
-      >
-        <span
-          className={`
-            absolute!
-            top-1!
-            h-4!
-            w-4!
-            rounded-full!
-            bg-white!
-            shadow-sm!
-            transition-transform!
-            duration-200!
-            ${
-              checked
-                ? "translate-x-6!"
-                : "translate-x-1!"
-            }
-          `}
-        />
-      </button>
+    <button
+  type="button"
+  role="switch"
+  aria-checked={checked}
+  aria-label={`Toggle ${title}`}
+  onClick={onChange}
+  className={`
+    relative!
+    h-6!
+    w-11!
+    shrink-0!
+    rounded-full!
+    transition-colors!
+    duration-200!
+    focus:outline-none!
+    focus:ring-1!
+    focus:ring-blue-600/20!
+    ${
+      checked
+        ? "bg-blue-600!"
+        : "bg-gray-300!"
+    }
+  `}
+>
+  <span
+    className={`
+      absolute!
+      left-0!
+      top-1!
+      h-4!
+      w-4!
+      rounded-full!
+      bg-white!
+      shadow-sm!
+      transition-transform!
+      duration-200!
+      ${
+        checked
+          ? "translate-x-6!"
+          : "translate-x-1!"
+      }
+    `}
+  />
+</button>
     </div>
   );
 };

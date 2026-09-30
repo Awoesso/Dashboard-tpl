@@ -522,7 +522,7 @@ const Sidebar = ({
               />
 
               <span className="font-heading! text-[15px]! font-semibold! tracking-tight! text-gray-900!">
-                Orion
+                
               </span>
             </>
           )}

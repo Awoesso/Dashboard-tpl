@@ -157,9 +157,7 @@ const DashChart = () => {
         >
           1 year
 
-          <span className="!text-[9px] font-normal text-gray-400">
-            ▼
-          </span>
+          
         </button>
 
       </div>

@@ -18,7 +18,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
-          <p className="mt-4 text-sm text-gray-600">Loading...</p>
+        
         </div>
       </div>
     );
@@ -49,7 +49,7 @@ export const PublicRoute = ({ children }: PublicRouteProps) => {
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
-          <p className="mt-4 text-sm text-gray-600">Loading...</p>
+      
         </div>
       </div>
     );

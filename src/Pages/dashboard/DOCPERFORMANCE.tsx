@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FileText } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-
+import { Link } from "react-router-dom";
 type DocumentStatus = "Published" | "Draft";
 
 type Document = {
@@ -80,12 +80,13 @@ const DOCPERFORMANCE = () => {
 
         </div>
 
-        <button
+        <Link
           type="button"
+          to="/dashboard/marketplace"
           className="rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-900 transition hover:bg-gray-50"
         >
           See All
-        </button>
+        </Link>
 
       </div>
 

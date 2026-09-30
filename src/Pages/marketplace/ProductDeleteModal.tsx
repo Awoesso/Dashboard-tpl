@@ -83,7 +83,7 @@ const ProductDeleteModal = ({
             onClose();
           }
         }}
-        className="absolute! inset-0! cursor-default!"
+        className="absolute! inset-0!  cursor-default!"
       />
 
       {/* MODAL */}
@@ -108,19 +108,13 @@ const ProductDeleteModal = ({
 
         <div className="flex! items-start! justify-between! gap-3! p-4! sm:p-5!">
           <div className="flex! min-w-0! items-start! gap-3!">
-            <div className="flex! h-10! w-10! shrink-0! items-center! justify-center! rounded-xl! border! border-red-200! bg-red-50! text-red-600!">
-              <Trash2
-                size={17}
-                strokeWidth={1.9}
-              />
-            </div>
-
+           
             <div className="min-w-0!">
               <h2
                 id="delete-product-title"
                 className="text-[14px]! font-semibold! tracking-tight! text-gray-900! sm:text-[15px]!"
               >
-                Delete product?
+                Delete product
               </h2>
 
               <p className="mt-1! text-[10px]! font-medium! leading-relaxed! text-gray-500! sm:text-[11px]!">
@@ -168,25 +162,20 @@ const ProductDeleteModal = ({
           <div
             className="
               rounded-xl!
-              border!
-              border-red-100!
-              bg-red-50/60!
+             
+             
               p-3!
             "
           >
             <div className="flex! items-start! gap-2.5!">
-              <AlertTriangle
-                size={14}
-                strokeWidth={1.9}
-                className="mt-0.5! shrink-0! text-red-600!"
-              />
+            
 
               <div className="min-w-0!">
-                <p className="truncate! text-[10px]! font-semibold! text-gray-900!">
+                <p className="truncate! text-[11px]! font-semibold! text-gray-900!">
                   {productName}
                 </p>
 
-                <p className="mt-1! text-[10px]! font-medium! leading-relaxed! text-gray-500!">
+                <p className="mt-1! text-[11px]! font-medium! leading-relaxed! text-gray-500!">
                   This product will be removed from
                   your Marketplace.
                 </p>
@@ -224,7 +213,7 @@ const ProductDeleteModal = ({
               w-full!
               items-center!
               justify-center!
-              rounded-xl!
+              rounded-full!
               border!
               border-gray-200!
               bg-white!
@@ -260,7 +249,7 @@ const ProductDeleteModal = ({
               items-center!
               justify-center!
               gap-1.5!
-              rounded-xl!
+              rounded-full!
               bg-red-600!
               px-4!
               text-[10px]!

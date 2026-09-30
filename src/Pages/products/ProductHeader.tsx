@@ -1,8 +1,5 @@
 import {
-  ArrowLeft,
   CheckCircle2,
-  Eye,
-  PackagePlus,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -59,82 +56,23 @@ const ProductHeader = ({
         {/* LEFT */}
 
         <div className="flex! min-w-0! items-center! gap-2.5!">
-          <Link
-            to="/dashboard/products"
-            aria-label="Back to products"
-            className="
-              inline-flex!
-              h-8!
-              w-8!
-              shrink-0!
-              items-center!
-              justify-center!
-              rounded-lg!
-              border!
-              border-gray-200!
-              bg-white!
-              text-gray-500!
-              transition-all!
-              duration-150!
-              hover:border-gray-300!
-              hover:bg-gray-50!
-              hover:text-gray-800!
-              active:scale-[0.97]!
-            "
-          >
-            <ArrowLeft
-              size={14}
-              strokeWidth={1.9}
-            />
-          </Link>
+        
 
           <div className="min-w-0!">
             <div className="flex! min-w-0! items-center! gap-2!">
              
 
               <h1
-                className="
-                  truncate!
-                  font-heading!
-                  text-[15px]!
-                  font-semibold!
-                  tracking-tight!
-                  text-gray-900!
-                  sm:text-base!
-                "
+            className="font-heading text-lg! font-semibold tracking-tight text-gray-800 sm:text-xl!"
               >
                 New product
               </h1>
 
-              <span
-                className="
-                  hidden!
-                  shrink-0!
-                  rounded-full!
-                  bg-gray-100!
-                  px-1.5!
-                  py-0.5!
-                  text-[8px]!
-                  font-semibold!
-                  text-gray-500!
-                  sm:inline-flex!
-                "
-              >
-                {isPublished
-                  ? "Published"
-                  : "Draft"}
-              </span>
+            
             </div>
 
             <p
-              className="
-                mt-0.5!
-                truncate!
-                text-[10px]!
-                font-medium!
-                text-gray-500!
-                sm:text-[11px]!
-              "
+              
             >
               Create and configure your product.
             </p>
@@ -152,7 +90,7 @@ const ProductHeader = ({
               items-center!
               justify-center!
               gap-1.5!
-              rounded-lg!
+              rounded-full!
               border!
               border-gray-200!
               bg-white!

@@ -85,11 +85,7 @@ const ProductInventory = ({
         "
       >
         <div className="flex! items-center! gap-1.5!">
-          <Package
-            size={14}
-            strokeWidth={1.8}
-            className="text-gray-400!"
-          />
+   
 
           <h2
             className="
@@ -142,29 +138,7 @@ const ProductInventory = ({
           `}
         >
           <div className="flex! min-w-0! items-center! gap-2.5!">
-            <span
-              className={`
-                flex!
-                h-8!
-                w-8!
-                shrink-0!
-                items-center!
-                justify-center!
-                rounded-lg!
-                border!
-                bg-white!
-                ${
-                  form.trackInventory
-                    ? "border-blue-200! text-blue-600!"
-                    : "border-gray-200! text-gray-500!"
-                }
-              `}
-            >
-              <ToggleLeft
-                size={15}
-                strokeWidth={1.8}
-              />
-            </span>
+          
 
             <div className="min-w-0!">
               <p
@@ -192,54 +166,56 @@ const ProductInventory = ({
             </div>
           </div>
 
-          <button
-            type="button"
-            role="switch"
-            aria-checked={form.trackInventory}
-            aria-label="Track inventory"
-            onClick={() =>
-              updateForm(
-                "trackInventory",
-                !form.trackInventory,
-              )
-            }
-            className={`
-              relative!
-              h-6!
-              w-10!
-              shrink-0!
-              rounded-full!
-              transition-colors!
-              duration-150!
-              focus:outline-none!
-              focus:ring-2!
-              focus:ring-blue-500/20!
-              ${
-                form.trackInventory
+       <button
+  type="button"
+  role="switch"
+  aria-checked={form.trackInventory}
+  aria-label="Track inventory"
+  onClick={() =>
+    updateForm(
+      "trackInventory",
+      !form.trackInventory,
+    )
+  }
+  className={`
+    relative!
+    h-6!
+    w-10!
+    shrink-0!
+    rounded-full!
+    transition-colors!
+    duration-150!
+    focus:outline-none!
+    focus:ring-2!
+      focus:ring-blue-500/20!    ${
+         form.trackInventory
+
                   ? "bg-blue-600!"
+
                   : "bg-gray-300!"
-              }
-            `}
-          >
-            <span
-              className={`
-                absolute!
-                top-1!
-                h-4!
-                w-4!
-                rounded-full!
-                bg-white!
-                shadow-sm!
-                transition-transform!
-                duration-150!
-                ${
-                  form.trackInventory
-                    ? "translate-x-5!"
-                    : "translate-x-1!"
-                }
-              `}
-            />
-          </button>
+    }
+  `}
+>
+  <span
+    className={`
+      absolute!
+      left-0.5!
+      top-0.5!
+      h-5!
+      w-5!
+      rounded-full!
+      bg-white!
+      shadow-sm!
+      transition!
+      duration-150!
+      ${
+        form.trackInventory
+          ? "translate-x-4!"
+          : "translate-x-0!"
+      }
+    `}
+  />
+</button>
         </div>
 
         {/* STOCK + SKU */}
@@ -390,9 +366,7 @@ const Field = ({
             transition-all!
             duration-150!
             placeholder:text-gray-400!
-            focus:border-blue-500!
-            focus:ring-2!
-            focus:ring-blue-500/10!
+            focus:border-gray-300!                                            focus:ring-2!                                                             focus:ring-gray-900/5!
             disabled:cursor-not-allowed!
             disabled:bg-gray-50!
             disabled:text-gray-400!

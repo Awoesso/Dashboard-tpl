@@ -95,9 +95,7 @@ const inputClass = `
   transition-all!
   duration-150!
   placeholder:text-gray-400!
-  focus:border-blue-500!
-  focus:ring-2!
-  focus:ring-blue-500/10!
+  focus:border-gray-300!                   focus:ring-2!                   focus:ring-gray-900/5!
 `;
 
 const ProductDetails = ({
@@ -122,39 +120,7 @@ const ProductDetails = ({
     >
       {/* HEADER */}
 
-      <div
-        className="
-          border-b!
-          border-gray-100!
-          px-4!
-          py-3.5!
-          sm:px-5!
-        "
-      >
-        <h2
-          className="
-            text-[14px]!
-            font-semibold!
-            tracking-tight!
-            text-gray-900!
-          "
-        >
-          Product details
-        </h2>
-
-        <p
-          className="
-            mt-0.5!
-            text-[10px]!
-            font-medium!
-            text-gray-500!
-            sm:text-[11px]!
-          "
-        >
-          Basic information about your product.
-        </p>
-      </div>
-
+    
       {/* CONTENT */}
 
       <div className="space-y-5! p-4! sm:p-5!">
@@ -162,11 +128,7 @@ const ProductDetails = ({
 
         <div>
           <div className="mb-2! flex! items-center! gap-1.5!">
-            <Box
-              size={12}
-              strokeWidth={1.8}
-              className="text-gray-400!"
-            />
+         
 
             <label className="text-[11px]! font-semibold! text-gray-700!">
               Product type
@@ -334,11 +296,7 @@ const ProductDetails = ({
         <div className="min-w-0!">
           <div className="mb-1.5! flex! items-center! justify-between! gap-3!">
             <div className="flex! items-center! gap-1.5!">
-              <FileText
-                size={12}
-                strokeWidth={1.8}
-                className="text-gray-400!"
-              />
+             
 
               <label
                 htmlFor="product-description"
@@ -383,7 +341,7 @@ const ProductDetails = ({
               rounded-lg!
               border!
               border-gray-200!
-              bg-white!
+              bg-{#fafafa}!
               px-3!
               py-2.5!
               text-[11px]!
@@ -394,9 +352,11 @@ const ProductDetails = ({
               transition-all!
               duration-150!
               placeholder:text-gray-400!
-              focus:border-blue-500!
-              focus:ring-2!
-              focus:ring-blue-500/10!
+            focus:border-gray-300! 
+                             
+            focus:ring-2!   
+                                            
+            focus:ring-gray-900/5!
             "
           />
 

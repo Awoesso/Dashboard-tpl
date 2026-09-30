@@ -22,13 +22,7 @@ const ProductShipping = ({
     <section className="rounded-2xl! border! border-gray-200! bg-white! p-4! sm:p-5!">
       {/* HEADER */}
       <div className="mb-4! flex! items-start! gap-3!">
-        <div className="flex! h-9! w-9! shrink-0! items-center! justify-center! rounded-xl! border! border-gray-200! bg-[#fafafa]! text-gray-600!">
-          <Box
-            size={16}
-            strokeWidth={1.9}
-          />
-        </div>
-
+       
         <div className="min-w-0!">
           <h2 className="text-[14px]! font-semibold! tracking-tight! text-gray-900! sm:text-[15px]!">
             Shipping
@@ -83,9 +77,7 @@ const ProductShipping = ({
               transition!
               duration-150!
               placeholder:text-gray-400!
-              focus:border-blue-500!
-              focus:ring-2!
-              focus:ring-blue-500/10!
+               focus:border-gray-300!                                            focus:ring-2!                                                             focus:ring-gray-900/5!
             "
           />
 
@@ -147,9 +139,7 @@ const ProductShipping = ({
                 transition!
                 duration-150!
                 placeholder:text-gray-400!
-                focus:border-blue-500!
-                focus:ring-2!
-                focus:ring-blue-500/10!
+                 focus:border-gray-300!                                            focus:ring-2!                                                             focus:ring-gray-900/5!
               "
             />
           </div>
@@ -187,9 +177,7 @@ const ProductShipping = ({
                 transition!
                 duration-150!
                 placeholder:text-gray-400!
-                focus:border-blue-500!
-                focus:ring-2!
-                focus:ring-blue-500/10!
+                 focus:border-gray-300!                                            focus:ring-2!                                                             focus:ring-gray-900/5!
               "
             />
           </div>
@@ -227,9 +215,7 @@ const ProductShipping = ({
                 transition!
                 duration-150!
                 placeholder:text-gray-400!
-                focus:border-blue-500!
-                focus:ring-2!
-                focus:ring-blue-500/10!
+                 focus:border-gray-300!                                            focus:ring-2!                                                             focus:ring-gray-900/5!
               "
             />
           </div>

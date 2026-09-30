@@ -41,13 +41,7 @@ const MarketplaceHeader = ({
           <div className="min-w-0!">
             <h1
               className="
-                truncate!
-                font-heading!
-                text-base!
-                font-semibold!
-                tracking-tight!
-                text-gray-900!
-                sm:text-lg!
+              font-heading text-lg! font-semibold tracking-tight text-gray-800 sm:text-xl!
               "
             >
               Marketplace

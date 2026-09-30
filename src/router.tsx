@@ -7,7 +7,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import MarketplaceProductDetails from "@/Pages/marketplace/MarketplaceProductDetails";
 
-
+import Leaderboard from "./Pages/leaderboard/Leaderboard";
 import Dashboard from "./Pages/dashboard/Dashboard";
 import Settings from "./Pages/settings/Settings";
 import Marketplace from "./Pages/marketplace/Marketplace";
@@ -72,6 +72,11 @@ export const router = createBrowserRouter([
         path: "settings",
         errorElement: <ErrorFallback />,
         element: <Settings />,
+      },
+       {
+        path: "leaderboard",
+        errorElement: <ErrorFallback />,
+        element: <Leaderboard />,
       },
        {
         path: "Marketplace",

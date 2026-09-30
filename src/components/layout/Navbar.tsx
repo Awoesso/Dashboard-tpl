@@ -178,7 +178,8 @@ const UserMenuPill = ({
 
           {/* Settings */}
 
-          <button
+          <Link
+          to="/dashboard/settings"
             type="button"
             className="
               flex!
@@ -205,7 +206,7 @@ const UserMenuPill = ({
             />
 
             <span>Settings</span>
-          </button>
+          </Link>
 
           <div className="my-1! h-px! bg-gray-100!" />
 

@@ -490,13 +490,13 @@ const ProductRow = ({
                 right-0!
                 top-[calc(100%+6px)]!
                 z-30!
-                w-44!
+                w-54!
                 overflow-hidden!
                 rounded-xl!
                 border!
                 border-gray-200!
                 bg-white!
-                p-1!
+                p-2!
                 shadow-lg!
               "
             >
@@ -516,7 +516,7 @@ const ProductRow = ({
                   px-2.5!
                   py-2!
                   text-left!
-                  text-[10px]!
+                  text-[12px]!
                   font-semibold!
                   text-gray-600!
                   transition-colors!
@@ -525,11 +525,7 @@ const ProductRow = ({
                   hover:text-gray-900!
                 "
               >
-                <Eye
-                  size={13}
-                  strokeWidth={1.8}
-                />
-
+             
                 View product
               </Link>
 
@@ -548,7 +544,7 @@ const ProductRow = ({
                   rounded-lg!
                   px-2.5!
                   py-2!
-                  text-[10px]!
+                  text-[12px]!
                   font-semibold!
                   text-gray-600!
                   transition-colors!
@@ -557,10 +553,7 @@ const ProductRow = ({
                   hover:text-gray-900!
                 "
               >
-                <Package
-                  size={13}
-                  strokeWidth={1.8}
-                />
+              
 
                 Edit product
               </Link>
@@ -584,12 +577,12 @@ const ProductRow = ({
                   px-2.5!
                   py-2!
                   text-left!
-                  text-[10px]!
+                  text-[12px]!
                   font-semibold!
                   text-red-600!
                   transition-colors!
                   duration-150!
-                  hover:bg-red-50!
+                  hover:bg-red-100!
                 "
               >
                 <Trash2

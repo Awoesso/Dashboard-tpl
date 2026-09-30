@@ -84,12 +84,7 @@ const ProductPricing = ({
         "
       >
         <div className="flex! items-center! gap-1.5!">
-          <CircleDollarSign
-            size={14}
-            strokeWidth={1.8}
-            className="text-gray-400!"
-          />
-
+        
           <h2
             className="
               text-[14px]!
@@ -253,9 +248,7 @@ const PriceField = ({
             duration-150!
             placeholder:font-medium!
             placeholder:text-gray-400!
-            focus:border-blue-500!
-            focus:ring-2!
-            focus:ring-blue-500/10!
+            focus:border-gray-300!                                            focus:ring-2!                                                             focus:ring-gray-900/5!
           "
         />
 

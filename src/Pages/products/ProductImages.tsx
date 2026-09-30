@@ -4,7 +4,7 @@ import type {
 } from "react";
 
 import {
-  ImagePlus,
+  Trash2,
   Upload,
   X,
 } from "lucide-react";
@@ -87,6 +87,13 @@ const ProductImages = ({
     );
   };
 
+  const handleClearAll = () => {
+    images.forEach((image) => {
+      URL.revokeObjectURL(image.preview);
+    });
+    onChange([]);
+  };
+
   const handleDrop = (
     event: React.DragEvent<HTMLDivElement>,
   ) => {
@@ -135,13 +142,6 @@ const ProductImages = ({
       {/* HEADER */}
       <div className="mb-4! flex! items-start! justify-between! gap-3!">
         <div className="flex! min-w-0! items-start! gap-3!">
-          <div className="flex! h-9! w-9! shrink-0! items-center! justify-center! rounded-xl! border! border-gray-200! bg-[#fafafa]! text-gray-600!">
-            <ImagePlus
-              size={16}
-              strokeWidth={1.9}
-            />
-          </div>
-
           <div className="min-w-0!">
             <h2 className="text-[14px]! font-semibold! tracking-tight! text-gray-900! sm:text-[15px]!">
               Product images
@@ -153,13 +153,39 @@ const ProductImages = ({
           </div>
         </div>
 
-        <span className="shrink-0! text-[10px]! font-semibold! text-gray-400!">
-          {images.length}/{MAX_IMAGES}
-        </span>
+        <div className="flex! items-center! gap-2.5!">
+          {images.length > 0 && (
+            <button
+              type="button"
+              onClick={handleClearAll}
+              className="
+                flex!
+                items-center!
+                gap-1!
+                rounded-md!
+                px-2!
+                py-1!
+                text-[10px]!
+                font-semibold!
+                text-red-600!
+                transition!
+                duration-150!
+                hover:bg-red-50!
+              "
+            >
+              <Trash2 size={12} strokeWidth={2} />
+              Delete all
+            </button>
+          )}
+
+          <span className="shrink-0! text-[10px]! font-semibold! text-gray-400!">
+            {images.length}/{MAX_IMAGES}
+          </span>
+        </div>
       </div>
 
       {/* DROPZONE */}
-      {images.length < MAX_IMAGES && (
+      {images.length === 0 && (
         <div
           onDragOver={(event) =>
             event.preventDefault()
@@ -183,21 +209,6 @@ const ProductImages = ({
             hover:bg-blue-50/40!
           "
         >
-          <div className="mx-auto! flex! h-10! w-10! items-center! justify-center! rounded-xl! border! border-gray-200! bg-white! text-gray-500! transition! duration-150! group-hover:border-blue-200! group-hover:text-blue-600!">
-            <Upload
-              size={17}
-              strokeWidth={1.8}
-            />
-          </div>
-
-          <p className="mt-3! text-[11px]! font-semibold! text-gray-700! sm:text-[12px]!">
-            Click to upload or drag and drop
-          </p>
-
-          <p className="mt-1! text-[10px]! font-medium! text-gray-400!">
-            PNG, JPG or WEBP
-          </p>
-
           <button
             type="button"
             onClick={(event) => {
@@ -228,9 +239,15 @@ const ProductImages = ({
               size={13}
               strokeWidth={1.9}
             />
-
             Choose files
           </button>
+          <p className="mt-3! text-[11px]! font-semibold! text-gray-700! sm:text-[12px]!">
+            Click to upload or drag and drop
+          </p>
+
+          <p className="mt-1! text-[10px]! font-medium! text-gray-400!">
+            PNG, JPG or WEBP
+          </p>
         </div>
       )}
 
@@ -280,7 +297,7 @@ const ProductImages = ({
                   {index + 1}
                 </div>
 
-                {/* REMOVE */}
+                {/* REMOVE INDIVIDUAL IMAGE */}
                 <button
                   type="button"
                   onClick={() =>
@@ -305,6 +322,7 @@ const ProductImages = ({
                     shadow-sm!
                     transition!
                     duration-150!
+                    hover:bg-red-50!
                     hover:text-red-600!
                     sm:opacity-0!
                     sm:group-hover:opacity-100!
@@ -321,7 +339,7 @@ const ProductImages = ({
         </div>
       )}
 
-      {/* INFO */}
+      {/* INFO & ADD MORE */}
       <div className="mt-3! flex! flex-wrap! items-center! justify-between! gap-2!">
         <p className="text-[10px]! font-medium! text-gray-400!">
           The first image will be used as the main product image.
