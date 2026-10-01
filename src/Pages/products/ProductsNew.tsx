@@ -73,18 +73,6 @@ export interface ProductFormData {
    CONSTANTS
 ========================================================= */
 
-export const categories = [
-  "Electronics",
-  "Fashion",
-  "Books",
-  "Home",
-  "Beauty",
-  "Sports",
-  "Accessories",
-  "Digital",
-  "Other",
-];
-
 const MAX_DESCRIPTION_LENGTH = 1000;
 
 const INITIAL_FORM: ProductFormData = {
@@ -523,7 +511,7 @@ const ProductsNew = () => {
       setShowReview(false);
 
       navigate(
-        "/dashboard/products",
+        "/dashboard/marketplace",
       );
     } catch (error) {
       console.error(

@@ -24,6 +24,26 @@ export interface MarketplaceProduct {
   created_at: string;
 }
 
+interface MarketplaceProductImageRecord {
+  storage_path: string | null;
+  sort_order: number | null;
+}
+
+interface MarketplaceProductRecord {
+  id: string;
+  name: string;
+  slug: string | null;
+  description: string | null;
+  category: string | null;
+  price: number | string | null;
+  currency: string | null;
+  status: MarketplaceProductStatus | null;
+  sales_count: number | string | null;
+  view_count: number | string | null;
+  created_at: string;
+  product_images?: MarketplaceProductImageRecord[] | null;
+}
+
 /* =========================================================
    IMAGE URL
 ========================================================= */
@@ -48,7 +68,7 @@ const getCoverUrl = (
 ========================================================= */
 
 const mapProduct = (
-  product: any,
+  product: MarketplaceProductRecord,
 ): MarketplaceProduct => {
   const firstImage =
     Array.isArray(

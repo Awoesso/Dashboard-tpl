@@ -1,5 +1,4 @@
 import {
-  CircleDollarSign,
   Tag,
 } from "lucide-react";
 

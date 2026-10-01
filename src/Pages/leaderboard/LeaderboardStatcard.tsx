@@ -225,7 +225,7 @@ const StatCardItem: React.FC<{ card: StatCard }> = ({ card }) => {
   const isPositive = card.change !== undefined && card.change >= 0;
 
   return (
-    <div className="flex min-w-0 flex-col justify-between rounded-xl border border-gray-200 bg-white px-3.5 py-3 transition-all duration-200 hover:-translate-y-[1px] hover:border-gray-300 hover:shadow-sm">
+    <div className="flex min-w-0 flex-col justify-between rounded-xl border border-gray-200 bg-white px-3.5 py-3 transition-all duration-200 hover:-translate-y-px hover:border-gray-300 hover:shadow-sm">
       <div className="flex items-center gap-1.5">
         <span className="text-gray-400">{card.icon}</span>
         <p className="min-w-0 truncate text-xs font-semibold text-gray-700">

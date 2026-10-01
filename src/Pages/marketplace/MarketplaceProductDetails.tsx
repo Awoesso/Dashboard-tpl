@@ -1,11 +1,6 @@
 import {
   ArrowLeft,
-  BarChart3,
-  CalendarDays,
-  Eye,
   Image as ImageIcon,
-  Pencil,
-  ShoppingBag,
   Tag,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
@@ -73,13 +68,6 @@ const ProductDetailsSkeleton = () => {
       </div>
     </div>
   );
-};
-
-const formatPrice = (price: number, currency: string) => {
-  return `${new Intl.NumberFormat("fr-FR", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(Number(price) || 0)} ${currency}`;
 };
 
 const formatDate = (date?: string) => {

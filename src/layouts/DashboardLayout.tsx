@@ -138,7 +138,7 @@ const DashboardLayout = () => {
               inset-y-0!
               left-0!
               h-screen!
-              w-[260px]!
+              w-65!
               max-w-[86vw]!
               overflow-hidden!
               bg-white!

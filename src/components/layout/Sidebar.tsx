@@ -2,7 +2,6 @@ import {
   LayoutDashboard,
   PlusCircle,
   Store,
-  Package,
   Wallet,
   Trophy,
   Settings,
@@ -201,45 +200,7 @@ const Sidebar = ({
 
   if (mobile) {
     return (
-      <>
-        {/* BACKDROP */}
-
-        <button
-          type="button"
-          aria-label="Close sidebar"
-          onClick={onToggle}
-          className="
-            fixed!
-            inset-0!
-            z-40!
-            cursor-default!
-            bg-black/30!
-            backdrop-blur-[2px]!
-          "
-        />
-
-        {/* SIDEBAR */}
-
-        <aside
-          onClick={(event) => {
-            event.stopPropagation();
-          }}
-          className="
-            fixed!
-            inset-y-0!
-            left-0!
-            z-50!
-            flex!
-            h-screen!
-            w-[260px]!
-            max-w-[86vw]!
-            flex-col!
-            overflow-hidden!
-            bg-white!
-            text-gray-600!
-            shadow-[8px_0_30px_rgba(0,0,0,0.12)]!
-          "
-        >
+      <div className="flex! h-full! w-full! flex-col! overflow-hidden! bg-white! text-gray-600!">
           {/* HEADER */}
 
           <div
@@ -447,8 +408,7 @@ const Sidebar = ({
               </div>
             </nav>
           </div>
-        </aside>
-      </>
+      </div>
     );
   }
 

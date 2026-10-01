@@ -6,6 +6,7 @@ import ProductsNew from "./Pages/products/ProductsNew";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import MarketplaceProductDetails from "@/Pages/marketplace/MarketplaceProductDetails";
+import OrderPage from "./Pages/leaderboard/OrderPage";
 
 import Leaderboard from "./Pages/leaderboard/Leaderboard";
 import Dashboard from "./Pages/dashboard/Dashboard";
@@ -78,8 +79,13 @@ export const router = createBrowserRouter([
         errorElement: <ErrorFallback />,
         element: <Leaderboard />,
       },
+      {
+        path: "orders/:orderId",
+        errorElement: <ErrorFallback />,
+        element: <OrderPage />,
+      },
        {
-        path: "Marketplace",
+        path: "marketplace",
         errorElement: <ErrorFallback />,
         element: <Marketplace />,
       },

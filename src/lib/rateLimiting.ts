@@ -59,13 +59,13 @@ export const rateLimit = (
 /**
  * Debounce function
  */
-export const debounce = <T extends (...args: any[]) => any>(
-  func: T,
+export const debounce = <Args extends unknown[], Return>(
+  func: (...args: Args) => Return,
   wait: number
-): ((...args: Parameters<T>) => void) => {
+): ((...args: Args) => void) => {
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  return (...args: Parameters<T>) => {
+  return (...args: Args) => {
     if (timeout) {
       clearTimeout(timeout);
     }
@@ -79,13 +79,13 @@ export const debounce = <T extends (...args: any[]) => any>(
 /**
  * Throttle function
  */
-export const throttle = <T extends (...args: any[]) => any>(
-  func: T,
+export const throttle = <Args extends unknown[], Return>(
+  func: (...args: Args) => Return,
   limit: number
-): ((...args: Parameters<T>) => void) => {
+): ((...args: Args) => void) => {
   let inThrottle = false;
 
-  return (...args: Parameters<T>) => {
+  return (...args: Args) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;

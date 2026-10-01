@@ -57,6 +57,7 @@ const GeneralSettings = () => {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFirstName(profile.first_name || "");
     setLastName(profile.last_name || "");
     setPhone(profile.phone || "");

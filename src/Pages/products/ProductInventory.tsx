@@ -1,7 +1,5 @@
 import {
   Hash,
-  Package,
-  ToggleLeft,
 } from "lucide-react";
 
 import type {

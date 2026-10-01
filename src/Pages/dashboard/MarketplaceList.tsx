@@ -4,7 +4,7 @@ import {
 
 import ProductRow, {
   type MarketplaceProduct,
-} from "./ProductRow";
+} from "../marketplace/ProductRow";
 
 type MarketplaceListProps = {
   products: MarketplaceProduct[];

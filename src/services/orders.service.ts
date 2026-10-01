@@ -44,6 +44,45 @@ export interface UpdatePaymentStatusInput {
   status: PaymentStatus;
 }
 
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  product_name: string;
+  unit_price: number;
+  quantity: number;
+  selected_variant: string | null;
+  created_at: string;
+}
+
+export async function getOrderItems(
+  orderId: string
+): Promise<OrderItem[]> {
+  const { data, error } = await supabase
+    .from("order_items")
+    .select(`
+      id,
+      order_id,
+      product_id,
+      product_name,
+      unit_price,
+      quantity,
+      selected_variant,
+      created_at
+    `)
+    .eq("order_id", orderId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Erreur récupération articles :", error);
+    throw new Error(
+      `Impossible de récupérer les articles : ${error.message}`
+    );
+  }
+
+  return (data ?? []) as OrderItem[];
+}
 /* -------------------------------------------------------------------------- */
 /* Constantes                                                                 */
 /* -------------------------------------------------------------------------- */
@@ -65,7 +104,7 @@ const ORDER_COLUMNS = `
 `;
 
 /* -------------------------------------------------------------------------- */
-/* Récupérer toutes les commandes                                             */
+/* Récupérer toutes les commandes                         A                    */
 /* -------------------------------------------------------------------------- */
 
 export async function getOrders(): Promise<Order[]> {

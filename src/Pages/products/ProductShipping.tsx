@@ -1,5 +1,4 @@
 import {
-  Box,
   Ruler,
   Weight,
 } from "lucide-react";

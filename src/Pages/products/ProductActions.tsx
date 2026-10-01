@@ -64,7 +64,7 @@ const ProductActions = ({
         {/* CANCEL */}
 
         <Link
-          to="/dashboard/products"
+          to="/dashboard/marketplace"
           className="
             inline-flex!
             h-10!
