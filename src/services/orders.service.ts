@@ -264,3 +264,67 @@ export function subscribeToOrders(
     void supabase.removeChannel(channel);
   };
 }
+
+
+
+
+/* -------------------------------------------------------------------------- */
+/* Wallet / résumé financier basé sur les commandes                          */
+/* -------------------------------------------------------------------------- */
+
+export interface WalletSummary {
+  balance: number;
+  currency: string;
+  lastActivity: string | null;
+}
+
+export async function getWalletSummary(): Promise<WalletSummary> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select(`
+      total_amount,
+      currency,
+      payment_status,
+      order_status,
+      created_at
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Erreur récupération wallet :", error);
+
+    throw new Error(
+      `Impossible de récupérer les données du wallet : ${error.message}`
+    );
+  }
+
+  const orders = data ?? [];
+
+  /*
+   * Le solde correspond uniquement aux commandes réellement payées.
+   * Les commandes annulées, échouées ou remboursées ne sont pas comptées.
+   */
+  const validPaidOrders = orders.filter(
+    (order) =>
+      order.payment_status === "paid" &&
+      order.order_status !== "cancelled"
+  );
+
+  const balance = validPaidOrders.reduce(
+    (total, order) => total + Number(order.total_amount || 0),
+    0
+  );
+
+  const currency =
+    validPaidOrders[0]?.currency ??
+    orders[0]?.currency ??
+    "XOF";
+
+  const lastActivity = orders[0]?.created_at ?? null;
+
+  return {
+    balance,
+    currency,
+    lastActivity,
+  };
+}

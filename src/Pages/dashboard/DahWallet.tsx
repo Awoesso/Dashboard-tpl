@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import {
   MoreHorizontal,
@@ -7,7 +8,158 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+import {
+  getWalletSummary,
+  type WalletSummary,
+} from "@/services/orders.service";
+
+/* -------------------------------------------------------------------------- */
+/* Helpers                                                                    */
+/* -------------------------------------------------------------------------- */
+
+const formatAmount = (
+  amount: number,
+  currency: string
+): string => {
+  return `${new Intl.NumberFormat("fr-FR", {
+    maximumFractionDigits: 2,
+  }).format(amount)} ${currency}`;
+};
+
+const formatRelativeTime = (
+  date: string | null
+): string => {
+  if (!date) {
+    return "Aucune activité";
+  }
+
+  const createdAt = new Date(date);
+
+  if (Number.isNaN(createdAt.getTime())) {
+    return "Date inconnue";
+  }
+
+  const now = new Date();
+
+  const difference =
+    now.getTime() - createdAt.getTime();
+
+  const seconds = Math.floor(difference / 1000);
+
+  if (seconds < 60) {
+    return "À l'instant";
+  }
+
+  const minutes = Math.floor(seconds / 60);
+
+  if (minutes < 60) {
+    return `Il y a ${minutes} min`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+
+  if (hours < 24) {
+    return `Il y a ${hours} h`;
+  }
+
+  const days = Math.floor(hours / 24);
+
+  if (days === 1) {
+    return "Hier";
+  }
+
+  if (days < 30) {
+    return `Il y a ${days} jours`;
+  }
+
+  const months = Math.floor(days / 30);
+
+  if (months < 12) {
+    return `Il y a ${months} mois`;
+  }
+
+  const years = Math.floor(months / 12);
+
+  return `Il y a ${years} an${years > 1 ? "s" : ""}`;
+};
+
+/* -------------------------------------------------------------------------- */
+/* Component                                                                  */
+/* -------------------------------------------------------------------------- */
+
 const DahWallet = () => {
+  const [wallet, setWallet] =
+    useState<WalletSummary | null>(null);
+
+  const [loading, setLoading] =
+    useState<boolean>(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  /* ------------------------------------------------------------------------ */
+  /* Chargement                                                               */
+  /* ------------------------------------------------------------------------ */
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadWallet = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await getWalletSummary();
+
+        if (!mounted) {
+          return;
+        }
+
+        setWallet(data);
+      } catch (error: unknown) {
+        console.error(
+          "Erreur chargement wallet :",
+          error
+        );
+
+        if (!mounted) {
+          return;
+        }
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Impossible de charger le wallet."
+        );
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadWallet();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  /* ------------------------------------------------------------------------ */
+  /* Données affichées                                                        */
+  /* ------------------------------------------------------------------------ */
+
+  const balance = wallet
+    ? formatAmount(
+        wallet.balance,
+        wallet.currency
+      )
+    : "—";
+
+  const lastActivity = wallet
+    ? formatRelativeTime(wallet.lastActivity)
+    : "—";
+
   return (
     <section className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5">
 
@@ -71,11 +223,15 @@ const DahWallet = () => {
           </p>
 
           <p className="mt-1 text-[20px]! font-semibold tracking-tight text-gray-900 sm:text-[22px]!">
-            207.86 XOF
+            {loading ? "—" : balance}
           </p>
 
           <p className="mt-0.5 text-[10px]! font-medium text-gray-500">
-            ≈ ₦38,870.02
+            {error
+              ? "Erreur de chargement"
+              : wallet
+                ? wallet.currency
+                : "—"}
           </p>
 
         </div>
@@ -123,7 +279,7 @@ const DahWallet = () => {
           </div>
 
           <span className="shrink-0 text-[10px]! font-semibold text-gray-700">
-            5 NFTs
+            —
           </span>
 
         </div>
@@ -147,7 +303,7 @@ const DahWallet = () => {
           </div>
 
           <span className="shrink-0 text-[10px]! font-semibold text-gray-700">
-            3 hours ago
+            {loading ? "—" : lastActivity}
           </span>
 
         </div>

@@ -4,45 +4,92 @@ import {
   CircleCheck,
 } from "lucide-react";
 
-import {
-  activitiesData,
-  type ActivityType,
-} from "./data/activitiesData";
+import type {
+  DashboardActivity,
+  DashboardActivityType,
+} from "@/services/dashboard.service";
 
 const activityStyles: Record<
-  ActivityType,
+  DashboardActivityType,
   {
     icon: typeof Wallet;
     container: string;
     iconColor: string;
   }
 > = {
-  earning: {
+  order: {
     icon: Wallet,
     container: "bg-orange-100",
     iconColor: "text-orange-500",
   },
 
-  download: {
+  notification: {
     icon: Download,
     container: "bg-blue-100",
     iconColor: "text-blue-500",
   },
 
-  success: {
+  payment: {
     icon: CircleCheck,
-    container: "bg-green-100",
-    iconColor: "text-green-500",
-  },
-
-  wallet: {
-    icon: Wallet,
     container: "bg-green-100",
     iconColor: "text-green-500",
   },
 };
 
-const RecentActivities = () => {
+const formatRelativeTime = (
+  createdAt: string
+): string => {
+  const time = new Date(createdAt).getTime();
+
+  if (Number.isNaN(time)) {
+    return "Recently";
+  }
+
+  const diffMinutes = Math.max(
+    0,
+    Math.round(
+      (Date.now() - time) / 60000
+    )
+  );
+
+  if (diffMinutes < 1) {
+    return "Now";
+  }
+
+  if (diffMinutes < 60) {
+    return `${diffMinutes}m`;
+  }
+
+  const diffHours = Math.floor(diffMinutes / 60);
+
+  if (diffHours < 24) {
+    return `${diffHours}h`;
+  }
+
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffDays < 7) {
+    return `${diffDays}d`;
+  }
+
+  return new Date(createdAt).toLocaleDateString(
+    "fr-FR",
+    {
+      day: "2-digit",
+      month: "2-digit",
+    }
+  );
+};
+
+type RecentActivitiesProps = {
+  activities?: DashboardActivity[];
+};
+
+const RecentActivities = ({
+  activities = [],
+}: RecentActivitiesProps) => {
+  const recentActivities = activities.slice(0, 4);
+
   return (
     <section className="w-full min-w-0 rounded-2xl border border-gray-200 bg-white p-3.5 sm:p-4">
 
@@ -140,76 +187,82 @@ const RecentActivities = () => {
 
       <div className="mt-3 divide-y divide-gray-100">
 
-        {activitiesData.map((activity) => {
-          const style = activityStyles[activity.type];
-          const Icon = style.icon;
+        {recentActivities.length === 0 ? (
+          <div className="py-6 text-center text-[11px] text-gray-400">
+            No recent activity.
+          </div>
+        ) : (
+          recentActivities.map((activity) => {
+            const style = activityStyles[activity.type];
+            const Icon = style.icon;
 
-          return (
-            <div
-              key={activity.id}
-              className="
-                flex
-                min-w-0
-                items-center
-                gap-2
-                py-2.5
-                sm:gap-2.5
-              "
-            >
-
-              {/* Icon */}
-
+            return (
               <div
-                className={`
-                  flex
-                  h-7 w-7
-                  shrink-0
-                  items-center justify-center
-                  rounded-full
-                  ${style.container}
-                `}
-              >
-                <Icon
-                  size={12}
-                  strokeWidth={2}
-                  className={style.iconColor}
-                />
-              </div>
-
-              {/* Content */}
-
-              <div className="min-w-0 flex-1">
-
-                <p className="truncate !text-[12px] font-medium text-gray-800">
-                  {activity.title}
-                </p>
-
-                <p className="truncate !text-[0.675rem] font-normal text-gray-400">
-                  {activity.description}
-                </p>
-
-              </div>
-
-              {/* Time */}
-
-              <span
+                key={activity.id}
                 className="
-                  max-w-[55px]
-                  shrink-0
-                  truncate
-                  !text-[9px]
-                  font-semibold
-                  text-gray-700
-                  sm:max-w-none
-                  sm:!text-[10px]
+                  flex
+                  min-w-0
+                  items-center
+                  gap-2
+                  py-2.5
+                  sm:gap-2.5
                 "
               >
-                {activity.time}
-              </span>
 
-            </div>
-          );
-        })}
+                {/* Icon */}
+
+                <div
+                  className={`
+                    flex
+                    h-7 w-7
+                    shrink-0
+                    items-center justify-center
+                    rounded-full
+                    ${style.container}
+                  `}
+                >
+                  <Icon
+                    size={12}
+                    strokeWidth={2}
+                    className={style.iconColor}
+                  />
+                </div>
+
+                {/* Content */}
+
+                <div className="min-w-0 flex-1">
+
+                  <p className="truncate !text-[12px] font-medium text-gray-800">
+                    {activity.title}
+                  </p>
+
+                  <p className="truncate !text-[0.675rem] font-normal text-gray-400">
+                    {activity.description}
+                  </p>
+
+                </div>
+
+                {/* Time */}
+
+                <span
+                  className="
+                    max-w-[55px]
+                    shrink-0
+                    truncate
+                    !text-[9px]
+                    font-semibold
+                    text-gray-700
+                    sm:max-w-none
+                    sm:!text-[10px]
+                  "
+                >
+                  {formatRelativeTime(activity.createdAt)}
+                </span>
+
+              </div>
+            );
+          })
+        )}
 
       </div>
 

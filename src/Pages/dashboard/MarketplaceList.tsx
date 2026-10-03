@@ -15,6 +15,7 @@ const MarketplaceList = ({
 }: MarketplaceListProps) => {
   return (
     <div className="min-w-0! overflow-hidden! rounded-2xl! border! border-gray-200! bg-white!">
+
       {/* ===============================================
           TABLE HEADER
       =============================================== */}
@@ -88,6 +89,7 @@ const MarketplaceList = ({
           </span>
         </div>
       </div>
+
     </div>
   );
 };

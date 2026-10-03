@@ -8,15 +8,25 @@ import {
   YAxis,
 } from "recharts";
 
-import { chartData } from "./data/chartData";
+import type {
+  DashboardAnalytics,
+  DashboardPeriod,
+  DashboardPeriodOption,
+} from "@/services/dashboard.service";
+
+interface DashChartProps {
+  analytics: DashboardAnalytics | null;
+  period: DashboardPeriod;
+  periodOptions: DashboardPeriodOption[];
+}
 
 type TooltipProps = {
   active?: boolean;
   payload?: {
     payload: {
-      month: string;
+      label: string;
       earnings: number;
-      downloads: number;
+      orders: number;
     };
   }[];
 };
@@ -42,10 +52,10 @@ const CustomTooltip = ({
         shadow-lg
       "
     >
-      {/* Month */}
+      {/* Label */}
 
-      <p className="mb-2 font-heading !text-[10px] font-semibold text-gray-900">
-        {data.month}
+      <p className="mb-2 font-heading text-[10px]! font-semibold text-gray-900">
+        {data.label}
       </p>
 
       {/* Metrics */}
@@ -55,24 +65,24 @@ const CustomTooltip = ({
         {/* Earnings */}
 
         <div className="flex items-center justify-between gap-4">
-          <span className="!text-[9px] font-normal text-gray-500">
+          <span className="text-[9px]! font-normal text-gray-500">
             Earnings
           </span>
 
-          <span className="font-mono !text-[9px] font-medium text-gray-900">
-            {data.earnings.toLocaleString()} XOF
+          <span className="font-mono text-[9px]! font-medium text-gray-900">
+            {data.earnings.toLocaleString("fr-FR")} XOF
           </span>
         </div>
 
-        {/* Downloads */}
+        {/* Orders */}
 
         <div className="flex items-center justify-between gap-4">
-          <span className="!text-[9px] font-normal text-gray-500">
-            Downloads
+          <span className="text-[9px]! font-normal text-gray-500">
+            Orders
           </span>
 
-          <span className="font-mono !text-[9px] font-medium text-gray-900">
-            {data.downloads}
+          <span className="font-mono text-[9px]! font-medium text-gray-900">
+            {data.orders.toLocaleString("fr-FR")}
           </span>
         </div>
 
@@ -81,7 +91,21 @@ const CustomTooltip = ({
   );
 };
 
-const DashChart = () => {
+const DashChart = ({
+  analytics,
+  period,
+  periodOptions,
+}: DashChartProps) => {
+  const chartData = analytics?.points ?? [];
+
+  const currentPeriod =
+    periodOptions?.find(
+      (item) => item.key === period
+    );
+
+  const periodLabel =
+    currentPeriod?.label ?? "Depuis le début";
+
   return (
     <section
       className="
@@ -118,7 +142,7 @@ const DashChart = () => {
             className="
               truncate
               font-heading
-              !text-[15px]
+              text-[15px]!
               font-semibold
               tracking-tight
               text-gray-900
@@ -127,8 +151,8 @@ const DashChart = () => {
             Analytics & Performances
           </h2>
 
-          <p className="mt-0.5 !text-[12px] font-normal text-gray-500">
-            Understand your earnings and downloads
+          <p className="mt-0.5 text-[12px]! font-normal text-gray-500">
+            Understand your earnings and orders
           </p>
 
         </div>
@@ -147,7 +171,7 @@ const DashChart = () => {
             border border-gray-200
             bg-white
             px-3 py-1.5
-            !text-xs
+            text-xs!
             font-medium
             text-gray-700
             transition-colors
@@ -155,9 +179,7 @@ const DashChart = () => {
             focus:outline-none
           "
         >
-          1 year
-
-          
+          {periodLabel}
         </button>
 
       </div>
@@ -170,7 +192,7 @@ const DashChart = () => {
 
           <span className="h-2 w-2 shrink-0 rounded-full bg-blue-600" />
 
-          <span className="!text-[10px] font-medium text-gray-600">
+          <span className="text-[10px]! font-medium text-gray-600">
             Earnings
           </span>
 
@@ -191,116 +213,124 @@ const DashChart = () => {
         "
       >
 
-        <ResponsiveContainer
-          width="100%"
-          height="100%"
-        >
-          <BarChart
-            data={chartData}
-            margin={{
-              top: 10,
-              right: 5,
-              left: -18,
-              bottom: 0,
-            }}
-            barCategoryGap="12%"
+        {chartData.length === 0 ? (
+          <div className="flex h-full items-center justify-center">
+            <p className="text-[11px]! font-medium text-gray-400">
+              Aucune donnée disponible
+            </p>
+          </div>
+        ) : (
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
           >
-
-            {/* ================= GRADIENT ================= */}
-
-            <defs>
-
-              <linearGradient
-                id="earningsGradient"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-
-                <stop
-                  offset="0%"
-                  stopColor="#3b82f6"
-                />
-
-                <stop
-                  offset="55%"
-                  stopColor="#2563eb"
-                />
-
-                <stop
-                  offset="100%"
-                  stopColor="#172554"
-                />
-
-              </linearGradient>
-
-            </defs>
-
-            {/* ================= GRID ================= */}
-
-            <CartesianGrid
-              vertical={false}
-              stroke="#e5e7eb"
-              strokeDasharray="3 3"
-            />
-
-            {/* ================= X AXIS ================= */}
-
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fontSize: 9,
-                fill: "#6b7280",
+            <BarChart
+              data={chartData}
+              margin={{
+                top: 10,
+                right: 5,
+                left: -18,
+                bottom: 0,
               }}
-              dy={7}
-              interval="preserveStartEnd"
-            />
+              barCategoryGap="12%"
+            >
 
-            {/* ================= Y AXIS ================= */}
+              {/* ================= GRADIENT ================= */}
 
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              width={35}
-              tick={{
-                fontSize: 8,
-                fill: "#9ca3af",
-              }}
-              tickFormatter={(value: number) =>
-                value >= 1000
-                  ? `${value / 1000}k`
-                  : `${value}`
-              }
-            />
+              <defs>
 
-            {/* ================= TOOLTIP ================= */}
+                <linearGradient
+                  id="earningsGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
 
-            <Tooltip
-              cursor={{
-                fill: "rgba(37, 99, 235, 0.04)",
-              }}
-              content={<CustomTooltip />}
-            />
+                  <stop
+                    offset="0%"
+                    stopColor="#3b82f6"
+                  />
 
-            {/* ================= BAR ================= */}
+                  <stop
+                    offset="55%"
+                    stopColor="#2563eb"
+                  />
 
-            <Bar
-              dataKey="earnings"
-              fill="url(#earningsGradient)"
-              radius={[6, 6, 2, 2]}
-              maxBarSize={52}
-              animationBegin={100}
-              animationDuration={800}
-              animationEasing="ease-out"
-              activeBar={false}
-              className="outline-none"
-            />
+                  <stop
+                    offset="100%"
+                    stopColor="#172554"
+                  />
 
-          </BarChart>
-        </ResponsiveContainer>
+                </linearGradient>
+
+              </defs>
+
+              {/* ================= GRID ================= */}
+
+              <CartesianGrid
+                vertical={false}
+                stroke="#e5e7eb"
+                strokeDasharray="3 3"
+              />
+
+              {/* ================= X AXIS ================= */}
+
+              <XAxis
+                dataKey="label"
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fontSize: 9,
+                  fill: "#6b7280",
+                }}
+                dy={7}
+                interval="preserveStartEnd"
+              />
+
+              {/* ================= Y AXIS ================= */}
+
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                width={35}
+                tick={{
+                  fontSize: 8,
+                  fill: "#9ca3af",
+                }}
+                tickFormatter={(value: number) =>
+                  value >= 1000
+                    ? `${value / 1000}k`
+                    : `${value}`
+                }
+              />
+
+              {/* ================= TOOLTIP ================= */}
+
+              <Tooltip
+                cursor={{
+                  fill: "rgba(37, 99, 235, 0.04)",
+                }}
+                content={<CustomTooltip />}
+              />
+
+              {/* ================= BAR ================= */}
+
+              <Bar
+                dataKey="earnings"
+                fill="url(#earningsGradient)"
+                radius={[6, 6, 2, 2]}
+                maxBarSize={52}
+                animationBegin={100}
+                animationDuration={800}
+                animationEasing="ease-out"
+                activeBar={false}
+                className="outline-none"
+              />
+
+            </BarChart>
+          </ResponsiveContainer>
+        )}
 
       </div>
 

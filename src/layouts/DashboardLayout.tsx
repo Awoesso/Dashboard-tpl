@@ -104,14 +104,13 @@ const DashboardLayout = () => {
             fixed!
             inset-0!
             z-50!
-            pointer-events-none!
             transition-opacity!
             duration-300!
             ease-out!
             ${
               mobileSidebarOpen
                 ? "pointer-events-auto! opacity-100!"
-                : "opacity-0!"
+                : "pointer-events-none! opacity-0!"
             }
           `}
         >
